@@ -30,11 +30,11 @@ model Nota {
   estado EstadoEnum 
   observaciones String?
   seguimiento Seguimiento[]
-  archivo Archivo[]
+  
 }
 
 enum EstadoEnum {
-  EN_PROCESO 
+  EN_PROCESO
   EN_CURSO
   FINALIZADO
 }
@@ -44,8 +44,7 @@ model Archivo {
   ruta String 
   nombre String?
   seguimiento Seguimiento[]
-  notaId Int
-  nota Nota @relation(fields: [notaId], references: [id])
+
 }
 
 model Seguimiento {
