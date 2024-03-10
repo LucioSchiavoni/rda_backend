@@ -12,7 +12,7 @@ export const createNotas = async(req, res) => {
 }
 
 
-export const getNotas = async() => {
+export const getNotas = async(req, res) => {
     try {
         const notas = await getNotasService();
         res.json(notas)
