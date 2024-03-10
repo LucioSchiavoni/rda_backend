@@ -1,11 +1,12 @@
-Seguimiento de pedidos
+# Seguimiento de pedidos
 
 
 
-Creacion de datos en postman:
+### Creacion de datos en postman:
 
-POST  /create
+-POST  /create
 raw:
+```
 
 {
     "nro_referencia": INT,
@@ -19,6 +20,6 @@ raw:
                 "ruta": "",
                 "nombre": ""
          }
-        
      }
 }
+```

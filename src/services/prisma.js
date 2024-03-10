@@ -1,19 +1,9 @@
-import { PrismaClient } from "@prisma/client";
-import dotenv from 'dotenv'
-dotenv.config()
+import prisma from "../config/db.js";
 
-const prisma = new PrismaClient({
-    datasources:{
-        db:{
-            url: process.env.DATABASE_URL
-        }
-    }
-});
 
 export const createNotasService = async (dataNotas) => {
 
     const {nro_referencia, motivo, nro_pedido, estado, observaciones, seguimiento} = dataNotas;
-
     const newNotas = await prisma.nota.create({
         data: {
             nro_referencia,
@@ -32,7 +22,6 @@ export const createNotasService = async (dataNotas) => {
                         }
                     }
                 }
-
             }
         }
     })
@@ -52,5 +41,3 @@ export const getNotasService = async () => {
         }
     })
 }
-
-export default prisma;

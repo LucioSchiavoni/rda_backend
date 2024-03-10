@@ -27,7 +27,7 @@ model Nota {
 model Archivo {
   id          Int           @id @default(autoincrement())
   ruta        String
-  nombre      String?
+  nombre      String?      
   seguimiento Seguimiento[]
 }
 
@@ -35,7 +35,7 @@ model Seguimiento {
   id        Int      @id @default(autoincrement())
   destino   String
   fecha     DateTime @default(now())
-  archivoId Int
+  archivoId Int   
   notaId    Int
   archivo   Archivo  @relation(fields: [archivoId], references: [id])
   nota      Nota     @relation(fields: [notaId], references: [id])
