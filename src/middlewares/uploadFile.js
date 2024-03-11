@@ -9,9 +9,10 @@ const directory = path.join(__dirname, 'upload');
 const storage = multer.diskStorage({
     destination: directory,
     filename: (req, file, cb) => {
-        
-        const originalname = path.extname(file.filename)
-        cb(null, originalname)
+        const timestamp = Date.now();
+        const extension = path.extname(file.originalname);
+        const filename = `${timestamp}${extension}`;
+        cb(null, filename);
     }
 })
 

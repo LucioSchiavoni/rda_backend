@@ -6,7 +6,7 @@ import upload from "../middlewares/uploadFile.js";
 const notasRouter = Router();
 
 
-notasRouter.post("/create", upload.single('ruta') , createNotas)
+notasRouter.post("/create", upload.single('seguimiento[archivo][ruta]') , createNotas)
 notasRouter.get("/allNotas", getNotas)
 
 export default notasRouter;

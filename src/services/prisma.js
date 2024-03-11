@@ -5,7 +5,7 @@ dotenv.config()
 export const createNotasService = async (req, dataNotas) => {
     
     const file = req.file
-    const uploadFile = file? `${req.protocol}://${req.hostname}:${process.env.PORT}/upload/${file.filename}`: '';
+    const uploadFile = file ? `${req.protocol}://${req.hostname}:${process.env.PORT}/upload/${file.filename}`: '';
 
     const {nro_referencia, motivo, nro_pedido, estado, observaciones, seguimiento} = dataNotas;
 
@@ -14,9 +14,9 @@ export const createNotasService = async (req, dataNotas) => {
 
     const newNotas = await prisma.nota.create({
         data: {
-            referenciaInt,
+           nro_referencia: referenciaInt,
             motivo,
-            pedidoInt,
+           nro_pedido: pedidoInt,
             estado,
             observaciones,
             seguimiento: {
@@ -26,7 +26,7 @@ export const createNotasService = async (req, dataNotas) => {
                     archivo:{
                         create:{
                             ruta: uploadFile,
-                            nombre: file ? file.filename : null
+                            nombre: file ? file.originalname : null
                         }
                     }
                 }

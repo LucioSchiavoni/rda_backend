@@ -12,6 +12,7 @@ app.use(express.json())
 app.use("/", notasRouter)
 app.use("/", notasRouter)
 
+
 app.listen(PORT, () =>  { 
     console.log(`Servidor corriendo en http://localhost:${PORT}`)
 })
