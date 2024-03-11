@@ -4,7 +4,6 @@ import { pedidoExist, referenciaExist } from "../services/validations/prismaVali
 
 
 export const createNotas = async(req, res) => {
-
     const {nro_pedido, nro_referencia} = req.body
     const pedido = await pedidoExist(nro_pedido)
     const referecia = await referenciaExist(nro_referencia)
@@ -14,8 +13,9 @@ export const createNotas = async(req, res) => {
     }else if(referecia){
         res.status(401).json({error: "Ya existe este numero de referencia"})
     }else{
+
     try {
-        const newNotas = await createNotasService(req.body);
+        const newNotas = await createNotasService(req, req.body);
         res.status(201).json({success: "Creacion exitosa"})
     } catch (error) {
         console.log(`Error en la creacion de notas: ${error}`)       
