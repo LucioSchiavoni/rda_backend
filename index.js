@@ -10,7 +10,7 @@ const PORT = process.env.PORT
 
 app.use(express.json())
 app.use("/", notasRouter)
-app.use("/", notasRouter)
+
 
 
 app.listen(PORT, () =>  { 
