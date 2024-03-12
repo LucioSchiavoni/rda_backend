@@ -64,6 +64,7 @@ export const getNotaId = async (id) => {
     })
     return res
 }
+
 export const createFileService = async(req, res) => {
         
     const file = req.file
@@ -71,7 +72,6 @@ export const createFileService = async(req, res) => {
     return await prisma.nota.create({
     data:{
         seguimiento:{
-            
             create:{
                 archivo:{
                     create:{
@@ -85,3 +85,4 @@ export const createFileService = async(req, res) => {
     })
     
 }
+

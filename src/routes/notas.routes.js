@@ -8,6 +8,6 @@ const notasRouter = Router();
 
 notasRouter.post("/create", upload.single('seguimiento[archivo][ruta]') , createNotas)
 notasRouter.get("/allNotas", getNotas)
-notasRouter.post("/createFile", upload.single('archivo'), createFile)
+notasRouter.post("/createFile", upload.single('seguimiento[archivo][ruta]'), createFile)
 
 export default notasRouter;
