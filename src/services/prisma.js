@@ -35,7 +35,8 @@ export const createNotasService = async (req, dataNotas) => {
         }
     })
         
-        console.log(newNotas)
+    console.log(newNotas)
+        
     
 }
 
@@ -50,50 +51,37 @@ export const getNotasService = async () => {
         }
     })
 }
-
-export const updateNotaService = async (req, id, updateData) => {
-    const file = req.file;
-    const uploadFile = file ? `${req.protocol}://${req.hostname}:${process.env.PORT}/upload/${file.filename}` : '';
-    const { motivo, estado, observaciones, seguimiento, archivoId } = updateData;
-    const idInt = parseInt(id);
-    const archivoIdInt = parseInt(archivoId);
-
-    try {
-        const data = {
-            motivo: motivo || undefined,
-            estado: estado || undefined,
-            observaciones: observaciones || undefined
-        };
-
-        if (file) {
+export const getNotaId = async (id) => {
+    const res =  await prisma.nota.findFirst({
+        select:{
+            seguimiento:{
+                select:{destino}
+            }
+        },
+        where:{
+            id: id
+        }
+    })
+    return res
+}
+export const createFileService = async(req, res) => {
+        
+    const file = req.file
+    const uploadFile = file ? `${req.protocol}://${req.hostname}:${process.env.PORT}/upload/${file.filename}`: '';
+    return await prisma.nota.create({
+    data:{
+        seguimiento:{
             
-            data.seguimiento = {
-                update: {
-                    where: { id: seguimiento.id }, 
-                    data: {
-                        archivo: {
-                            update: {
-                                where: { id: archivoIdInt }, 
-                    data: {
-                                    ruta: uploadFile
-                                }
-                            }
-                        }
+            create:{
+                archivo:{
+                    create:{
+                        ruta: uploadFile,
+                        nombre: file ? file.originalname : null
                     }
                 }
-            };
+            }
         }
-
-      
-        await prisma.nota.update({
-            where: { id: idInt },
-            data
-        });
-
-        return "Nota actualizada correctamente";
-    } catch (error) {
-        throw error;
     }
-};
-
-
+    })
+    
+}

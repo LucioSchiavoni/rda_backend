@@ -1,4 +1,4 @@
-import { createNotasService, getNotasService, updateNotaService } from "../services/prisma.js";
+import { createNotasService, getNotasService, createFileService } from "../services/prisma.js";
 import { pedidoExist, referenciaExist } from "../services/validations/prismaValidate.js";
 
 
@@ -35,12 +35,10 @@ export const getNotas = async(req, res) => {
 }
 
 
-export const updateNotas = async (req, res) => {
-
-    const {id} = req.body
+export const createFile = async (req, res) => {
 
     try {
-        const update = await updateNotaService(req, id, req.body)
+        const update = await createFileService(req.body)
         res.json({succes: "Actualizacion exitosa"})
     } catch (error) {
         console.log(error)
