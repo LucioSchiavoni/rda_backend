@@ -61,12 +61,25 @@ export const createFileService = async (req, dataId) => {
     const uploadFile = file ? `${req.protocol}://${req.hostname}:${process.env.PORT}/upload/${file.filename}` : '';
     
     try {
+
+        const seguimientoExistente = await prisma.seguimiento.findFirst({
+            where: {
+                id: seguimientoIdInt
+            }
+        })
       
         const newArchivo = await prisma.archivo.create({
             data: {
-                ruta: uploadFile,
-                nombre: file ? file.originalname : null,
-                seguimiento: { connect: { id: seguimientoIdInt } }  
+                destino: seguimientoExistente.destino,
+                fecha: new Date(),
+                archivo: {
+                    create: {
+                         ruta: uploadFile,
+                        nombre: file ? file.originalname : null,
+                    }   
+                },
+                seguimiento: {connect: {id: seguimientoExistente.id}},
+                nota: { connect: { id: seguimientoExistente.notaId.toString } }  
             }
         });
         

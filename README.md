@@ -23,3 +23,10 @@ raw:
      }
 }
 ```
+
+-POST  /createFile
+form-data:
+```
+    seguimiento[archivo][ruta]
+    id (id de seguimiento)  
+```
