@@ -22,13 +22,15 @@ model Nota {
   estado         EstadoEnum
   observaciones  String?
   seguimiento    Seguimiento[]
+  
 }
 
 model Archivo {
   id          Int           @id @default(autoincrement())
-  ruta        String
+  ruta        String        @unique
   nombre      String?      
-  seguimiento Seguimiento[]
+  seguimiento Seguimiento[] 
+ 
 }
 
 model Seguimiento {

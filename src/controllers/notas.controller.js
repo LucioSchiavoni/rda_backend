@@ -36,9 +36,8 @@ export const getNotas = async(req, res) => {
 
 
 export const createFile = async (req, res) => {
-
     try {
-        const update = await createFileService(req.body)
+        const update = await createFileService(req, req.body)
         res.json({succes: "Actualizacion exitosa"})
     } catch (error) {
         console.log(error)

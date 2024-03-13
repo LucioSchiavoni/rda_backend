@@ -51,38 +51,29 @@ export const getNotasService = async () => {
         }
     })
 }
-export const getNotaId = async (id) => {
-    const res =  await prisma.nota.findFirst({
-        select:{
-            seguimiento:{
-                select:{destino}
-            }
-        },
-        where:{
-            id: id
-        }
-    })
-    return res
-}
 
-export const createFileService = async(req, res) => {
-        
-    const file = req.file
-    const uploadFile = file ? `${req.protocol}://${req.hostname}:${process.env.PORT}/upload/${file.filename}`: '';
-    return await prisma.nota.create({
-    data:{
-        seguimiento:{
-            create:{
-                archivo:{
-                    create:{
-                        ruta: uploadFile,
-                        nombre: file ? file.originalname : null
-                    }
-                }
-            }
-        }
-    }
-    })
+
+export const createFileService = async (req, dataId) => {
+
+    const { id } = dataId;
+    const seguimientoIdInt = parseInt(id) 
+    const file = req.file;
+    const uploadFile = file ? `${req.protocol}://${req.hostname}:${process.env.PORT}/upload/${file.filename}` : '';
     
-}
+    try {
+      
+        const newArchivo = await prisma.archivo.create({
+            data: {
+                ruta: uploadFile,
+                nombre: file ? file.originalname : null,
+                seguimiento: { connect: { id: seguimientoIdInt } }  
+            }
+        });
+        
+        return newArchivo;
+    } catch (error) {
+        throw error;
+    }
+};
+
 
