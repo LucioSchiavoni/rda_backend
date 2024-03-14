@@ -52,6 +52,23 @@ export const getNotasService = async () => {
     })
 }
 
+export const getNotasByIdService = async (id) => {
+
+    const idInt = parseInt(id)
+    return await prisma.nota.findFirst({
+        where: {
+            id: idInt
+        },
+        include : {
+            seguimiento: {
+                include: {
+                    archivo: true
+                }
+            }
+        }
+    })
+}
+
 
 export const createFileService = async (req, dataId) => {
 

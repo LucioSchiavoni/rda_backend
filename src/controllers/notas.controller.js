@@ -1,4 +1,4 @@
-import { createNotasService, getNotasService, createFileService } from "../services/prisma.js";
+import { createNotasService, getNotasService, createFileService, getNotasByIdService } from "../services/prisma.js";
 import { pedidoExist, referenciaExist } from "../services/validations/prismaValidate.js";
 
 
@@ -34,6 +34,17 @@ export const getNotas = async(req, res) => {
     }
 }
 
+export const getNotasById = async (req, res) => {
+    const {id} = req.params
+
+    try {
+        const notaById = await getNotasByIdService(id)
+        res.json(notaById)
+       
+    } catch (error) {
+        console.log("Error al obtener la nota por id: " ,error)
+    }
+}
 
 export const createFile = async (req, res) => {
     try {
