@@ -27,3 +27,34 @@ export const referenciaExist = async(nro_referencia) => {
     return referencia !== null
 }
 
+
+export const destinoId = async (notaId) => {
+    try {
+      
+        const nota = await prisma.nota.findUnique({
+            where: {
+                id: notaId
+            }
+        });
+
+        
+        if (!nota) {
+            throw new Error('La nota no existe');
+        }
+
+
+        const seguimientos = await prisma.seguimiento.findMany({
+            where: {
+                notaId: notaId
+            }
+        });
+
+        
+        const destinos = seguimientos.map(seguimiento => seguimiento.destino);
+        
+        return destinos;
+    } catch (error) {
+        throw new Error('Error al buscar el destino del seguimiento: ' + error.message);
+    }
+};
+

@@ -27,6 +27,7 @@ raw:
 -POST  /createFile
 form-data:
 ```
-    seguimiento[archivo][ruta]
-    id (id de seguimiento)  
+    name: seguimiento[archivo][ruta]
+    id (id de nota)  
 ```
+

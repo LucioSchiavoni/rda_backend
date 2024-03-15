@@ -1,4 +1,4 @@
-import { createNotasService, getNotasService, createFileService, getNotasByIdService } from "../services/prisma.js";
+import { createNotasService, getNotasService, createFileService, getNotasByIdService, getSeguimientoByIdService } from "../services/prisma.js";
 import { pedidoExist, referenciaExist } from "../services/validations/prismaValidate.js";
 
 
@@ -48,9 +48,19 @@ export const getNotasById = async (req, res) => {
 
 export const createFile = async (req, res) => {
     try {
-        const update = await createFileService(req, req.body)
-        res.json({succes: "Archivo subido con exito"})
+        const updateFile = await createFileService(req, req.body)
+        res.json({succes: "Se creo el archivo correctamente!"})
     } catch (error) {
         console.log(error)
+    }
+}
+
+export const getSeguimientoById = async(req, res) => {
+    const {id} = req.params
+    try {
+        const seguimiento = await getSeguimientoByIdService(id)
+        res.json(seguimiento)
+    } catch (error) {
+        console.log("Error al obtener el seguimiento de la nota: ", error)
     }
 }

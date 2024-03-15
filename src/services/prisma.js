@@ -1,5 +1,6 @@
 import prisma from "../config/db.js";
 import dotenv from 'dotenv'
+import { destinoId } from "./validations/prismaValidate.js";
 dotenv.config()
 
 
@@ -52,6 +53,16 @@ export const getNotasService = async () => {
     })
 }
 
+export const getSeguimientoByIdService = async(id) => {
+
+    const idInt = parseInt(id)
+    return await prisma.seguimiento.findMany({
+        where: {
+            notaId: idInt
+        }
+    })
+}
+
 export const getNotasByIdService = async (id) => {
 
     const idInt = parseInt(id)
@@ -69,41 +80,38 @@ export const getNotasByIdService = async (id) => {
     })
 }
 
+export const createFileService = async(req, notaId) => {
 
-export const createFileService = async (req, dataId) => {
+    const {id} = notaId;
 
-    const { id } = dataId;
-    const seguimientoIdInt = parseInt(id) 
+    const idInt = parseInt(id)
+    const destino = await destinoId(idInt)
+
+    const ultimoDestino = destino[destino.length - 1]
+
     const file = req.file;
     const uploadFile = file ? `${req.protocol}://${req.hostname}:${process.env.PORT}/upload/${file.filename}` : '';
-    
-    try {
 
-        const seguimientoExistente = await prisma.seguimiento.findFirst({
-            where: {
-                id: seguimientoIdInt
-            }
-        })
-      
-        const newArchivo = await prisma.archivo.create({
-            data: {
-                destino: seguimientoExistente.destino,
+    try {
+        const newFile = await prisma.seguimiento.create({
+            data:{
+                destino: ultimoDestino,
                 fecha: new Date(),
                 archivo: {
                     create: {
-                         ruta: uploadFile,
+                        ruta: uploadFile,
                         nombre: file ? file.originalname : null,
-                    }   
+                    }
                 },
-                seguimiento: {connect: {id: seguimientoExistente.id}},
-                nota: { connect: { id: seguimientoExistente.notaId.toString } }  
+                nota: {
+                    connect: {
+                        id: idInt
+                    }
+                }
             }
-        });
-        
-        return newArchivo;
+        })
+        return newFile;
     } catch (error) {
-        throw error;
+        console.log("Error al crear nuevo archivo: ", error)
     }
-};
-
-
+}
