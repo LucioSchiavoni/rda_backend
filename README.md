@@ -5,25 +5,13 @@
 ### Creacion de datos en postman:
 
 -POST  /create
-raw:
+Formdata:
+```
+seguimiento[destino]
+seguimiento[archivo][ruta]
 ```
 
-{
-    "nro_referencia": INT,
-    "motivo": " ",
-    "nro_pedido": INT,
-    "observaciones": "",
-    "estado": "EN_PROCESO",
-    "seguimiento": {
-         "destino": "",
-            "archivo": {
-                "ruta": "",
-                "nombre": ""
-         }
-     }
-}
-```
-
+Crear nuevo seguimiento con un nuevo archivo
 -POST  /createFile
 form-data:
 ```
@@ -31,3 +19,8 @@ form-data:
     id (id de nota)  
 ```
 
+Crear user, login y auth en formato raw
+
+post /register
+post /login : Devuelve el token
+get /auth : Devuelve  {"auth": true}
