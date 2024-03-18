@@ -59,6 +59,9 @@ export const getSeguimientoByIdService = async(id) => {
     return await prisma.seguimiento.findMany({
         where: {
             notaId: idInt
+        },
+        include: {
+            archivo: true
         }
     })
 }

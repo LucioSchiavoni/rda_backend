@@ -24,3 +24,13 @@ Crear user, login y auth en formato raw
 post /register
 post /login : Devuelve el token
 get /auth : Devuelve  {"auth": true}
+
+
+
+-GET /seguimiento/:id (id de nota)
+
+devuelve los datos de seguimiento de esa nota 
+
+-GET /nota/:id (id de nota)
+
+devuelve el dato de la nota con su seguimiento y archivo

@@ -71,7 +71,7 @@ export const authService = async (req, res) => {
     try {
         const authHeader = req.get('Authorization')
         const token = authHeader.split(' ')[1];
-        const decodedToken = jwt.verify(token, secret);
+        const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
 
         if (!decodedToken) {
         return res.status(401).json({ error: 'Token inválido' });

@@ -21,6 +21,9 @@ app.use(cors(opcionesCors))
 app.use("/", notasRouter)
 app.use("/", userRouter)
 
+app.get("/", (req,res) => {
+    res.json("Index")
+})
 
 app.listen(PORT, () =>  { 
     console.log(`Servidor corriendo en http://localhost:${PORT}`)
