@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 dotenv.config()
 
-const secret = process.env.SECRET_KEY;
+
 
 
 export const registerService = async (dataUser) => {
@@ -56,7 +56,7 @@ export const loginService = async (req, res) => {
     password: existUser.password,
     rol: existUser.rol
     },
-    secret , 
+    process.env.SECRET_KEY , 
     { expiresIn: '12h' });
 
     res.status(200).json({ token });
