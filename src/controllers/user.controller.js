@@ -5,7 +5,6 @@ import { loginService, authService, registerService } from "../services/auth/aut
 
 export const login  = async (req, res) => {
     try {
-        console.log(req.body)
         const login = await loginService(req,res)
         res.json(login)
     } catch (error) {

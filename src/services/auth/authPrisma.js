@@ -84,8 +84,12 @@ export const authService = async (req, res) => {
     if(!userToken){
         return res.status(401).json({ error: "Usuario no encontrado"})
     }
-
-    res.status(200).json({auth: true})
+    
+    res.status(200).json({
+        id: userToken.id,
+        username: userToken.username,
+        rol: userToken.rol
+ })
     } catch (error) {
         console.log("Error de autenticacion: ", error)
     }
