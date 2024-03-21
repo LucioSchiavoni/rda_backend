@@ -1,6 +1,6 @@
 # Seguimiento de pedidos
 
-
+## FRONTEND_URL_DEV=  (sin barra al final)
 
 ### Creacion de datos en postman:
 
