@@ -15,9 +15,9 @@ const opcionesCors = {
     origin: process.env.FRONTEND_URL_DEV
 }
 
+app.use(cors(opcionesCors))
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
-app.use(cors(opcionesCors))
 app.use("/", notasRouter)
 app.use("/", userRouter)
 
