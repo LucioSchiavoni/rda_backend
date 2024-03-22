@@ -20,10 +20,9 @@ enum RolUser {
 }
 
 model Nota {
-  id             Int           @id @default(autoincrement())
-  nro_referencia Int           @unique
+  nro_referencia Int           @id @default(autoincrement()) 
   motivo         String
-  nro_pedido     Int?          @unique
+  nro_pedido     Int?         
   estado         EstadoEnum
   observaciones  String?
   seguimiento    Seguimiento[]
@@ -45,7 +44,7 @@ model Seguimiento {
   archivoId Int   
   notaId    Int
   archivo   Archivo  @relation(fields: [archivoId], references: [id])
-  nota      Nota     @relation(fields: [notaId], references: [id])
+  nota      Nota     @relation(fields: [notaId], references: [nro_referencia])
 
   @@index([archivoId], map: "Seguimiento_archivoId_fkey")
   @@index([notaId], map: "Seguimiento_notaId_fkey")

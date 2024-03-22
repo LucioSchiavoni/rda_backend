@@ -58,7 +58,7 @@ export const loginService = async (req, res) => {
     },
     process.env.SECRET_KEY , 
     { expiresIn: '12h' });
-
+        
     res.status(200).json({ token });
 
     } catch (error) {
@@ -91,6 +91,9 @@ export const authService = async (req, res) => {
         rol: userToken.rol
  })
     } catch (error) {
+        if (error instanceof jwt.JsonWebTokenError) {
+            return res.status(401).json({ error: 'Token JWT inválido' });
+        }
         console.log("Error de autenticacion: ", error)
     }
 }

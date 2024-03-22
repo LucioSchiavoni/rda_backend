@@ -9,14 +9,12 @@ export const createNotasService = async (req, dataNotas) => {
     const file = req.file
     const uploadFile = file ? `${req.protocol}://${req.hostname}:${process.env.PORT}/upload/${file.filename}`: '';
 
-    const {nro_referencia, motivo, nro_pedido, estado, observaciones, seguimiento} = dataNotas;
+    const { motivo, nro_pedido, estado, observaciones, seguimiento} = dataNotas;
 
-    const referenciaInt = parseInt(nro_referencia)
     const pedidoInt = parseInt(nro_pedido)
 
     const newNotas = await prisma.nota.create({
         data: {
-           nro_referencia: referenciaInt,
             motivo,
            nro_pedido: pedidoInt,
             estado,
@@ -53,9 +51,9 @@ export const getNotasService = async () => {
     })
 }
 
-export const getSeguimientoByIdService = async(id) => {
+export const getSeguimientoByIdService = async(nro_referencia) => {
 
-    const idInt = parseInt(id)
+    const idInt = parseInt(nro_referencia)
     return await prisma.seguimiento.findMany({
         where: {
             notaId: idInt
@@ -66,12 +64,12 @@ export const getSeguimientoByIdService = async(id) => {
     })
 }
 
-export const getNotasByIdService = async (id) => {
+export const getNotasByIdService = async (nro_referencia) => {
 
-    const idInt = parseInt(id)
+    const idInt = parseInt(nro_referencia)
     return await prisma.nota.findFirst({
         where: {
-            id: idInt
+            nro_referencia: idInt
         },
         include : {
             seguimiento: {
@@ -85,9 +83,9 @@ export const getNotasByIdService = async (id) => {
 
 export const createFileService = async(req, notaId) => {
 
-    const {id} = notaId;
+    const {nro_referencia} = notaId;
 
-    const idInt = parseInt(id)
+    const idInt = parseInt(nro_referencia)
     const destino = await destinoId(idInt)
 
     const ultimoDestino = destino[destino.length - 1]
@@ -108,7 +106,7 @@ export const createFileService = async(req, notaId) => {
                 },
                 nota: {
                     connect: {
-                        id: idInt
+                        nro_referencia: idInt
                     }
                 }
             }

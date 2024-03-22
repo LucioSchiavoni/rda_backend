@@ -15,25 +15,25 @@ export const pedidoExist = async(nro_pedido) => {
 }
 
 
-export const referenciaExist = async(nro_referencia) => {
+// export const referenciaExist = async(nro_referencia) => {
 
-    const referenciaInt = parseInt(nro_referencia)
-    const referencia = await prisma.nota.findFirst({
-        where: {
-            nro_referencia: referenciaInt
-        }
-    })
+//     const referenciaInt = parseInt(nro_referencia)
+//     const referencia = await prisma.nota.findFirst({
+//         where: {
+//             nro_referencia: referenciaInt
+//         }
+//     })
 
-    return referencia !== null
-}
+//     return referencia !== null
+// }
 
 
-export const destinoId = async (notaId) => {
+export const destinoId = async (nro_referencia) => {
     try {
       
         const nota = await prisma.nota.findUnique({
             where: {
-                id: notaId
+                nro_referencia: nro_referencia
             }
         });
 
@@ -45,7 +45,7 @@ export const destinoId = async (notaId) => {
 
         const seguimientos = await prisma.seguimiento.findMany({
             where: {
-                notaId: notaId
+                notaId: nro_referencia
             }
         });
 

@@ -1,19 +1,15 @@
 import { createNotasService, getNotasService, createFileService, getNotasByIdService, getSeguimientoByIdService } from "../services/prisma.js";
-import { pedidoExist, referenciaExist } from "../services/validations/prismaValidate.js";
+import { pedidoExist } from "../services/validations/prismaValidate.js";
 
 
 
 export const createNotas = async(req, res) => {
-    const {nro_pedido, nro_referencia} = req.body
+    const {nro_pedido} = req.body
     const pedido = await pedidoExist(nro_pedido)
-    const referecia = await referenciaExist(nro_referencia)
 
     if(pedido){
         res.status(401).json({error: "Ya existe este numero de pedido"})
-    }else if(referecia){
-        res.status(401).json({error: "Ya existe este numero de referencia"})
     }else{
-
     try {
         const newNotas = await createNotasService(req, req.body);
         res.status(201).json({success: "Creacion exitosa"})
@@ -35,10 +31,10 @@ export const getNotas = async(req, res) => {
 }
 
 export const getNotasById = async (req, res) => {
-    const {id} = req.params
+    const {nro_referencia} = req.params
 
     try {
-        const notaById = await getNotasByIdService(id)
+        const notaById = await getNotasByIdService(nro_referencia)
         res.json(notaById)
        
     } catch (error) {
