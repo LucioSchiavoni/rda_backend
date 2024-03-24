@@ -31,8 +31,8 @@ model Nota {
 
 model Archivo {
   id          Int           @id @default(autoincrement())
-  ruta        String        @unique
-  nombre      String?      
+  ruta        String        
+  nombre      String?        
   seguimiento Seguimiento[] 
  
 }

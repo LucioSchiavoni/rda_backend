@@ -11,8 +11,15 @@ export const createNotas = async(req, res) => {
         res.status(401).json({error: "Ya existe este numero de pedido"})
     }else{
     try {
-        const newNotas = await createNotasService(req, req.body);
+        if(req.file){
+                const newNotas = await createNotasService(req, req.body);
+        console.log(newNotas)
         res.status(201).json({success: "Creacion exitosa"})
+        }else{
+              res.status(400).json({ error: "No se proporcionó ningún archivo" });
+              console.log("Sin archivo")
+        }
+    
     } catch (error) {
         console.log(`Error en la creacion de notas: ${error}`)       
     }

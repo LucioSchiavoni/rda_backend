@@ -7,6 +7,10 @@
 -POST  /create
 Formdata:
 ```
+motivo
+nro_pedido 
+estado
+observaciones
 seguimiento[destino]
 seguimiento[archivo][ruta]
 ```
