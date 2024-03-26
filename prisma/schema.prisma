@@ -33,8 +33,8 @@ model Archivo {
   id          Int           @id @default(autoincrement())
   ruta        String        
   nombre      String?        
-  seguimiento Seguimiento[] 
- 
+  seguimiento Seguimiento[]
+  
 }
 
 model Seguimiento {
@@ -43,8 +43,8 @@ model Seguimiento {
   fecha     DateTime @default(now())
   archivoId Int   
   notaId    Int
-  archivo   Archivo  @relation(fields: [archivoId], references: [id])
-  nota      Nota     @relation(fields: [notaId], references: [nro_referencia])
+  archivo   Archivo  @relation(fields: [archivoId], references: [id],  onDelete: Cascade)
+  nota      Nota     @relation(fields: [notaId], references: [nro_referencia],  onDelete: Cascade)
 
   @@index([archivoId], map: "Seguimiento_archivoId_fkey")
   @@index([notaId], map: "Seguimiento_notaId_fkey")

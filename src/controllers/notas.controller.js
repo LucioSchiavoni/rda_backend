@@ -1,4 +1,4 @@
-import { createNotasService, getNotasService, createFileService, getNotasByIdService, getSeguimientoByIdService } from "../services/prisma.js";
+import { createNotasService, getNotasService, createFileService, getNotasByIdService, getSeguimientoByIdService, deleteNotaService } from "../services/prisma.js";
 import { pedidoExist } from "../services/validations/prismaValidate.js";
 
 
@@ -59,5 +59,17 @@ export const getSeguimientoById = async(req, res) => {
         res.json(seguimiento)
     } catch (error) {
         console.log("Error al obtener el seguimiento de la nota: ", error)
+    }
+}
+
+
+export const deleteNota = async(req, res) => {
+    const {id} = req.params;
+    console.log(id)
+    try {
+        await deleteNotaService(id)
+        res.json({succes: "Eliminado correctamente"})
+    } catch (error) {
+        console.log(error)
     }
 }

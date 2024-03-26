@@ -116,3 +116,20 @@ export const createFileService = async(req, notaId) => {
         console.log("Error al crear nuevo archivo: ", error)
     }
 }
+
+
+export const deleteNotaService = async(notaId) => {
+    const idInt = parseInt(notaId)
+  
+    try {
+        await prisma.nota.deleteMany({
+            where:{
+                nro_referencia:idInt
+            }
+        })
+
+    return { success: "Nota eliminada correctamente" };
+    } catch (error) {
+        console.log(error)
+    }
+}
