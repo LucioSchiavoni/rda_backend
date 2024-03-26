@@ -39,6 +39,81 @@ export const createNotasService = async (req, dataNotas) => {
     
 }
 
+export const updateNotasService = async(nro_referencia, dataNotas) => {
+    
+    const { motivo, nro_pedido, estado, observaciones} = dataNotas
+    const pedidoInt = parseInt(nro_pedido)
+    const referenciaInt = parseInt(nro_referencia)
+    try {
+        const existingNota = await prisma.nota.findUnique({
+            where: {
+                nro_referencia: referenciaInt
+            },
+            include: {
+                seguimiento: {
+
+                    include: {
+                        archivo: true
+                    }
+                }
+            }
+            
+        });
+
+        if (!existingNota) {
+            throw new Error('Nota no encontrada');
+        }
+
+        const updateData = {};
+
+        if (motivo !== undefined) {
+            updateData.motivo = motivo;
+        }
+        if (nro_pedido !== undefined) {
+            updateData.nro_pedido = pedidoInt;
+        }
+        if (estado !== undefined) {
+            updateData.estado = estado;
+            if(estado === 'FINALIZADO'){
+            const archivo = await prisma.seguimiento.findFirst({
+                where: {
+                    notaId: referenciaInt
+                },
+                include: {archivo: true}
+            })
+                await prisma.seguimiento.create({
+                    data:{
+                        destino: archivo.destino,
+                        fecha: new Date(),
+                        archivo: {
+                            create:{
+                                ruta:archivo.archivo.ruta,
+                                nombre: archivo.archivo.nombre
+                            }
+                        },
+                        nota: {connect: {nro_referencia: referenciaInt}}, 
+                    
+                    }
+                })
+            }
+        }
+        if (observaciones !== undefined) {
+            updateData.observaciones = observaciones;
+        }
+    
+        const updatedNota = await prisma.nota.update({
+            where: {
+                nro_referencia: referenciaInt
+            },
+            data: updateData
+        });
+        return { success: "Nota actualizada correctamente", nota: updatedNota };
+    } catch (error) {
+        console.log(error)
+    }
+        
+}
+
 export const getNotasService = async () => {
     return await prisma.nota.findMany({
         include: {
