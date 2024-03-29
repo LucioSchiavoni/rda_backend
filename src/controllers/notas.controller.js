@@ -1,4 +1,4 @@
-import { createNotasService, getNotasService, createFileService, getNotasByIdService, getSeguimientoByIdService, deleteNotaService, updateNotasService } from "../services/prisma.js";
+import { createNotasService, getNotasService, createFileService, getNotasByIdService, getSeguimientoByIdService, deleteNotaService, updateNotasService, downloadFileService } from "../services/prisma.js";
 import { pedidoExist } from "../services/validations/prismaValidate.js";
 
 
@@ -57,6 +57,16 @@ export const createFile = async (req, res) => {
     try {
         const updateFile = await createFileService(req, req.body)
         res.json({succes: "Se creo el archivo correctamente!"})
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export const downloadFile = async(req, res) =>{
+
+    try {
+        await downloadFileService(req,res)
+        
     } catch (error) {
         console.log(error)
     }

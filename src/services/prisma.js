@@ -1,6 +1,8 @@
 import prisma from "../config/db.js";
 import dotenv from 'dotenv'
 import { destinoId } from "./validations/prismaValidate.js";
+import { promisify } from 'util';
+import * as fs from 'fs';
 dotenv.config()
 
 
@@ -39,6 +41,31 @@ export const createNotasService = async (req, dataNotas) => {
     
 }
 
+export const downloadFileService = async (req, res) => {
+
+    try {
+        const { id } = req.params;
+        const archivo = await prisma.archivo.findUnique({
+            where: { id: parseInt(id) },
+        });
+
+        if (!archivo) {
+            console.log("Archivo no encontrado");
+            return res.status(404).send("Archivo no encontrado");
+        }
+
+        const fileUrl = archivo.ruta;
+        const rutaLocalRelativa = fileUrl.replace(/^.*\/\/[^\/]+/, '');
+        const rutaEnPC = `src/middlewares${rutaLocalRelativa}`;
+        console.log(rutaLocalRelativa)
+        
+        
+        res.download(rutaEnPC);
+    } catch (error) {
+        console.error('Error al descargar el archivo:', error);
+        res.status(500).send("Error al descargar el archivo");
+    }
+}
 export const updateNotasService = async(nro_referencia, dataNotas) => {
     
     const { motivo, nro_pedido, estado, observaciones} = dataNotas
