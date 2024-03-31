@@ -1,8 +1,7 @@
 import prisma from "../config/db.js";
 import dotenv from 'dotenv'
 import { destinoId } from "./validations/prismaValidate.js";
-import { promisify } from 'util';
-import * as fs from 'fs';
+
 dotenv.config()
 
 
@@ -18,7 +17,7 @@ export const createNotasService = async (req, dataNotas) => {
     const newNotas = await prisma.nota.create({
         data: {
             motivo,
-           nro_pedido: pedidoInt,
+            nro_pedido: pedidoInt,
             estado,
             observaciones,
             seguimiento: {
@@ -35,10 +34,29 @@ export const createNotasService = async (req, dataNotas) => {
             }
         }
     })
-        
-    console.log(newNotas)
+    
         
     
+}
+
+export const getNotasByEstadoService = async (estado) =>  {
+    try {
+        const nota = await prisma.nota.findMany({
+            where: {
+                estado: estado
+            },
+            include:{
+                seguimiento: {
+                    include: {
+                        archivo: true
+                    }
+                }
+            },
+        })
+        return nota;
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 export const downloadFileService = async (req, res) => {
@@ -57,9 +75,7 @@ export const downloadFileService = async (req, res) => {
         const fileUrl = archivo.ruta;
         const rutaLocalRelativa = fileUrl.replace(/^.*\/\/[^\/]+/, '');
         const rutaEnPC = `src/middlewares${rutaLocalRelativa}`;
-        console.log(rutaLocalRelativa)
-        
-        
+
         res.download(rutaEnPC);
     } catch (error) {
         console.error('Error al descargar el archivo:', error);
@@ -78,7 +94,6 @@ export const updateNotasService = async(nro_referencia, dataNotas) => {
             },
             include: {
                 seguimiento: {
-
                     include: {
                         archivo: true
                     }
@@ -231,6 +246,27 @@ export const deleteNotaService = async(notaId) => {
         })
 
     return { success: "Nota eliminada correctamente" };
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
+export const getByNroPedidoService = async(nro_pedido) => {
+    
+    try {
+        await prisma.nota.findMany({
+            where:{
+                nro_pedido: nro_pedido
+            },
+            include:{
+                seguimiento:{
+                    include:{
+                        archivo:true
+                    }
+                }
+            }
+        })
     } catch (error) {
         console.log(error)
     }

@@ -7,9 +7,9 @@ dotenv.config()
 
 
 
-export const registerService = async (dataUser) => {
+export const registerService = async (req,res) => {
     
-    const {username, password, rol} = dataUser;
+    const {username, password, rol} = req.body;
     try {
         const exist = await prisma.user.findFirst({
             where: {
@@ -28,8 +28,8 @@ export const registerService = async (dataUser) => {
                 rol: rol
             }
         })
-        return newUser;
-    
+        res.json({success: "Usuario creado con exito"})
+        
     } catch (error) {
         console.log("Error del registro: ", error)
     }
@@ -44,11 +44,11 @@ export const loginService = async (req, res) => {
             }
         })
         if (!existUser) {
-        return res.status(401).json({ error: 'Usuario no encontrado' });
+        return res.json({ error: 'Usuario no encontrado' });
         }
     const passwordMatch = await bcrypt.compare(password, existUser.password);
     if (!passwordMatch) {
-      return res.status(401).json({ error: 'Credenciales inválidas' });
+      return res.json({ error: 'Credenciales inválidas' });
     }
     const token = jwt.sign({ 
     id: existUser.id,

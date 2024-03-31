@@ -6,7 +6,7 @@ import { loginService, authService, registerService } from "../services/auth/aut
 export const login  = async (req, res) => {
     try {
         const login = await loginService(req,res)
-        res.json(login)
+        return login
     } catch (error) {
         console.log("Error del controlador login: ", error)
     }
@@ -24,8 +24,8 @@ export const auth = async(req, res) => {
 
 export const register = async(req, res) => {
     try {
-        const register = await registerService(req.body)
-        res.json(register)
+        const register = await registerService(req, res)
+        return register
     } catch (error) {
         console.log("Error de registro controlador: ", error)
     }
