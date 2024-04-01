@@ -1,4 +1,4 @@
-import { loginService, authService, registerService } from "../services/auth/authPrisma.js";
+import { loginService, authService, registerService, changePasswordService } from "../services/auth/authPrisma.js";
 
 
 
@@ -28,5 +28,14 @@ export const register = async(req, res) => {
         return register
     } catch (error) {
         console.log("Error de registro controlador: ", error)
+    }
+}
+
+export const changePassword = async(req,res) => {
+    try {
+        const changePassword  = await changePasswordService(req, res)
+        return changePassword
+    } catch (error) {
+        console.log(error)
     }
 }

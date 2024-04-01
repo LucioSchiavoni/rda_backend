@@ -89,11 +89,33 @@ export const authService = async (req, res) => {
         id: userToken.id,
         username: userToken.username,
         rol: userToken.rol
- })
+    })
     } catch (error) {
         if (error instanceof jwt.JsonWebTokenError) {
             return res.status(401).json({ error: 'Token JWT inválido' });
         }
         console.log("Error de autenticacion: ", error)
+    }
+}
+
+
+export const changePasswordService = async(req,res) => {
+    const {id} = req.params;
+    const {password} = req.body;
+
+    try {
+            const salt = bcrypt.genSaltSync(10);
+            const hashPassword =  bcrypt.hashSync(password, salt)
+            await prisma.user.update({
+                where:{
+                    id: parseInt(id)
+                },
+            data:{
+                password: hashPassword
+            }
+        })
+        res.json({success: "Contraseña actualizada con éxito"})
+    } catch (error) {
+        console.log(error)
     }
 }
