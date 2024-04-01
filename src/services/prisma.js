@@ -1,6 +1,7 @@
 import prisma from "../config/db.js";
 import dotenv from 'dotenv'
 import { destinoId } from "./validations/prismaValidate.js";
+import fs from 'fs'
 
 dotenv.config()
 
@@ -82,6 +83,7 @@ export const downloadFileService = async (req, res) => {
         res.status(500).send("Error al descargar el archivo");
     }
 }
+
 export const updateNotasService = async(nro_referencia, dataNotas) => {
     
     const { motivo, nro_pedido, estado, observaciones} = dataNotas
