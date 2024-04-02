@@ -72,7 +72,7 @@ export const downloadFileService = async (req, res) => {
             console.log("Archivo no encontrado");
             return res.status(404).send("Archivo no encontrado");
         }
-
+        
         const fileUrl = archivo.ruta;
         const rutaLocalRelativa = fileUrl.replace(/^.*\/\/[^\/]+/, '');
         const rutaEnPC = `src/middlewares${rutaLocalRelativa}`;
