@@ -76,7 +76,7 @@ export const downloadFileService = async (req, res) => {
         const fileUrl = archivo.ruta;
         const rutaLocalRelativa = fileUrl.replace(/^.*\/\/[^\/]+/, '');
         const rutaEnPC = `src/middlewares${rutaLocalRelativa}`;
-
+        
         res.download(rutaEnPC);
     } catch (error) {
         console.error('Error al descargar el archivo:', error);
