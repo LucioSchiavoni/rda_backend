@@ -3,6 +3,10 @@ import prisma from "../../config/db.js";
 
 export const pedidoExist = async(nro_pedido) => {
 
+    if (nro_pedido === null || nro_pedido === undefined) {
+        return false; 
+    }
+
     const pedidoInt = parseInt(nro_pedido)
     const pedido =  await prisma.nota.findFirst({
         where:{
@@ -13,20 +17,6 @@ export const pedidoExist = async(nro_pedido) => {
     return pedido !== null
 
 }
-
-
-// export const referenciaExist = async(nro_referencia) => {
-
-//     const referenciaInt = parseInt(nro_referencia)
-//     const referencia = await prisma.nota.findFirst({
-//         where: {
-//             nro_referencia: referenciaInt
-//         }
-//     })
-
-//     return referencia !== null
-// }
-
 
 export const destinoId = async (nro_referencia) => {
     try {

@@ -1,25 +1,31 @@
-import { createNotasService, getNotasService, createFileService, getNotasByIdService, getSeguimientoByIdService, deleteNotaService, updateNotasService, downloadFileService, getNotasByEstadoService, getByNroPedidoService } from "../services/prisma.js";
+import { createNotasService, getNotasService, createFileService, getNotasByIdService, getSeguimientoByIdService, deleteNotaService, updateNotasService, downloadFileService, getNotasByEstadoService } from "../services/prisma.js";
 import { pedidoExist } from "../services/validations/prismaValidate.js";
 
 
 
-export const createNotas = async(req, res) => {
-    const {nro_pedido} = req.body
-    const pedido = await pedidoExist(nro_pedido)
+export const createNotas = async (req, res) => {
+    const { nro_pedido } = req.body;
 
-    if(pedido){
-        return res.status(404).json({error: "Ya existe este numero de pedido"})
-    }else{
     try {
-        const newNotas = await createNotasService(req, req.body);
-        console.log(newNotas)
-        res.send({success: "Creacion exitosa"})
+        if (!nro_pedido) {
+          
+            const newNotas = await createNotasService(req, req.body);
+            console.log(newNotas);
+            res.send({ success: "Creacion exitosa" });
+            return;
+        }
+        const pedido = await pedidoExist(nro_pedido);
+        if (pedido === null) {
+            const newNotas = await createNotasService(req, req.body);
+            console.log(newNotas);
+            res.send({ success: "Creacion exitosa" });
+        } else if (pedido) {
+            res.status(404).json({ error: "Ya existe este numero de pedido" });
+        }
     } catch (error) {
-        console.log(`Error en la creacion de notas: ${error}`)       
+        handleError(res, error);
     }
-
-    }
-}
+};
 
 export const updateNotas = async(req,res) => {
     const {id} = req.params
@@ -99,16 +105,6 @@ export const getNotaByEstado = async(req,res) => {
     const {estado} = req.params
     try {
        const data = await getNotasByEstadoService(estado)
-        res.json(data)
-    } catch (error) {
-        console.log(error)
-    }
-}
-
-export const getNroPedido = async(req,res) => {
-    const {nro_pedido} = req.body
-    try {
-        const data = await getByNroPedidoService(nro_pedido)
         res.json(data)
     } catch (error) {
         console.log(error)

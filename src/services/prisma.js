@@ -1,7 +1,7 @@
 import prisma from "../config/db.js";
 import dotenv from 'dotenv'
 import { destinoId } from "./validations/prismaValidate.js";
-import fs from 'fs'
+
 
 dotenv.config()
 
@@ -248,27 +248,6 @@ export const deleteNotaService = async(notaId) => {
         })
 
     return { success: "Nota eliminada correctamente" };
-    } catch (error) {
-        console.log(error)
-    }
-}
-
-
-export const getByNroPedidoService = async(nro_pedido) => {
-    
-    try {
-        await prisma.nota.findMany({
-            where:{
-                nro_pedido: nro_pedido
-            },
-            include:{
-                seguimiento:{
-                    include:{
-                        archivo:true
-                    }
-                }
-            }
-        })
     } catch (error) {
         console.log(error)
     }
