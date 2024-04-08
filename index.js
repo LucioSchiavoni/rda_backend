@@ -12,7 +12,7 @@ const app = express()
 const PORT = process.env.PORT
 
 const opcionesCors = {
-    origin: process.env.FRONTEND_URL_DEV,
+    origin: '*',
     credentials: true 
 };
 
@@ -27,6 +27,6 @@ app.get("/", (req,res) => {
     res.json("Index")
 })
 
-app.listen(PORT, () =>  { 
-    console.log(`Servidor corriendo en http://localhost:${PORT}`)
+app.listen(PORT, '0.0.0.0', () =>  { 
+    console.log(`Servidor corriendo en http://0.0.0.0:${PORT}`)
 })
