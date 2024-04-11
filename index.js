@@ -12,7 +12,7 @@ const app = express()
 const PORT = process.env.PORT
 
 const opcionesCors = {
-    origin: '*',
+    origin: process.env.FRONTEND_URL_DEV,
     credentials: true 
 };
 
