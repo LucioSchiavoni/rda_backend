@@ -11,19 +11,23 @@ const app = express()
 
 const PORT = process.env.PORT
 
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
+
 const opcionesCors = {
     origin: process.env.FRONTEND_URL_DEV,
     credentials: true 
 };
 
 app.use(cors(opcionesCors))
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(bodyParser.json());
+
 app.use("/upload", express.static("src/middlewares/upload"))
 app.use("/", notasRouter)
 app.use("/", userRouter)
 
-
+app.get("/", (req,res) => {
+    res.send("Index")
+})
 
 app.listen(PORT, () =>  { 
     console.log(`Servidor corriendo en http://0.0.0.0:${PORT}`)
