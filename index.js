@@ -3,7 +3,7 @@ import cors from 'cors'
 import notasRouter from './src/routes/notas.routes.js'
 import userRouter from './src/routes/user.routes.js'
 import dotenv from 'dotenv'
-import bodyParser from 'body-parser'
+
 dotenv.config()
 
 
@@ -18,7 +18,7 @@ const opcionesCors = {
 
 app.use(cors(opcionesCors))
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(bodyParser.json());
+app.use(express.json());
 app.use("/upload", express.static("src/middlewares/upload"))
 app.use("/", notasRouter)
 app.use("/", userRouter)
