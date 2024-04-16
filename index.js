@@ -17,7 +17,6 @@ const opcionesCors = {
 };
 
 app.use(cors(opcionesCors))
-app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.json());
 app.use("/upload", express.static("src/middlewares/upload"))
 app.use("/", notasRouter)
