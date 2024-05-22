@@ -19,11 +19,10 @@ enum RolUser {
   USER
 }
 
+//se cambio nro pedido y motivo por el titulo y observaciones
 model Nota {
   nro_referencia Int           @id @default(autoincrement()) 
-  motivo         String
-  nro_pedido     Int?         
-  estado         EstadoEnum
+  titulo         String         
   observaciones  String?
   seguimiento    Seguimiento[]
   
@@ -37,9 +36,9 @@ model Archivo {
   
 }
 
+// se borro destino
 model Seguimiento {
   id        Int      @id @default(autoincrement())
-  destino   String
   fecha     DateTime @default(now())
   archivoId Int   
   notaId    Int
@@ -50,8 +49,4 @@ model Seguimiento {
   @@index([notaId], map: "Seguimiento_notaId_fkey")
 }
 
-enum EstadoEnum {
-  EN_PROCESO
-  EN_CURSO
-  FINALIZADO
-}
+

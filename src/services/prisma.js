@@ -11,20 +11,14 @@ export const createNotasService = async (req, dataNotas) => {
     const file = req.file
     const uploadFile = file ? `${req.protocol}://${req.hostname}:${process.env.PORT}/upload/${file.filename}`: '';
 
-    const { motivo, nro_pedido, estado, observaciones, seguimiento} = dataNotas;
-
-    const pedidoInt = parseInt(nro_pedido)
-
+    const { titulo,  observaciones} = dataNotas;
+ 
     const newNotas = await prisma.nota.create({
         data: {
-            motivo,
-            nro_pedido: pedidoInt,
-            estado,
+            titulo,
             observaciones,
             seguimiento: {
                 create:{
-                    destino:
-                    seguimiento.destino,
                     archivo:{
                         create:{
                             ruta: uploadFile,
