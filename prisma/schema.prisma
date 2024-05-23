@@ -12,11 +12,17 @@ model User {
   username String @unique
   password String
   rol      RolUser
+  notas Nota[]  
 }
 
 enum RolUser {
   ADMIN
   USER
+}
+
+enum Estado {
+  PUBLICO
+  PRIVADO
 }
 
 //se cambio nro pedido y motivo por el titulo y observaciones
@@ -25,27 +31,36 @@ model Nota {
   titulo         String         
   observaciones  String?
   seguimiento    Seguimiento[]
-  
+  autorId Int
+  autor User @relation(fields: [autorId], references: [id])
+  estado Estado
 }
 
 model Archivo {
   id          Int           @id @default(autoincrement())
   ruta        String        
   nombre      String?        
-  seguimiento Seguimiento[]
+  carpeta  Carpeta[]
   
 }
 
-// se borro destino
+model Carpeta {
+  id Int @id @default(autoincrement())
+  nombre String
+  archivos Archivo[]
+  seguimiento Seguimiento? @relation(fields: [seguimientoId], references: [id])
+  seguimientoId Int
+}
+
+
 model Seguimiento {
   id        Int      @id @default(autoincrement())
   fecha     DateTime @default(now())
-  archivoId Int   
-  notaId    Int
-  archivo   Archivo  @relation(fields: [archivoId], references: [id],  onDelete: Cascade)
-  nota      Nota     @relation(fields: [notaId], references: [nro_referencia],  onDelete: Cascade)
-
-  @@index([archivoId], map: "Seguimiento_archivoId_fkey")
+  archivoId Int     
+  notaId    Int 
+  nota      Nota  @relation(fields: [notaId], references: [nro_referencia],  onDelete: Cascade)
+  carpetas Carpeta[]
+  
   @@index([notaId], map: "Seguimiento_notaId_fkey")
 }
 
