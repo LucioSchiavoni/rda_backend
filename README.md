@@ -1,17 +1,14 @@
-# Seguimiento de pedidos
-
-## FRONTEND_URL_DEV=  (sin barra al final)
+# Gestor de archivos
 
 ### Creacion de datos en postman:
 
 -POST  /create
-Formdata:
+Formdata
 ```
-motivo
-nro_pedido 
-estado
+nro_referencia(id)
+titulo
 observaciones
-seguimiento[destino]
+seguimiento[destino] 
 seguimiento[archivo][ruta]
 ```
 
