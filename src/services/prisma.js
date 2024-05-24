@@ -18,17 +18,18 @@ export const createNotasService = async (req, dataNotas) => {
             observaciones,
             autorId,
             seguimiento: {
-                create: {
-                    archivo: {
-                        create: {
-                            ruta: uploadFile,
-                            nombre: file ? file.originalname : null
+                carpetas: {
+                    nombre,
+                    create: {
+                        archivo: {
+                            create: {
+                                    ruta: uploadFile,
+                                    nombre: file ? file.originalname : null
                         }
                     },
-                    carpetas: {
-                        create: []
+                        }
                     }
-                }
+                
             }
         },
         include: {
