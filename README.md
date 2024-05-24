@@ -7,8 +7,8 @@ Formdata
 ```
 nro_referencia(id)
 titulo
-observaciones
-seguimiento[destino] 
+asunto
+seguimiento[carpeta][nombre] 
 seguimiento[archivo][ruta]
 ```
 

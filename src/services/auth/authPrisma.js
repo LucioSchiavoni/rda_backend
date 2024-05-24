@@ -9,7 +9,7 @@ dotenv.config()
 
 export const registerService = async (req,res) => {
     
-    const {username, password, rol} = req.body;
+    const {username, password, rol, name} = req.body;
     try {
         const exist = await prisma.user.findFirst({
             where: {
@@ -24,6 +24,7 @@ export const registerService = async (req,res) => {
         const newUser =  await prisma.user.create({
             data:{
                 username: username,
+                name: name,
                 password: hashPassword,
                 rol: rol
             }
@@ -53,6 +54,7 @@ export const loginService = async (req, res) => {
     const token = jwt.sign({ 
     id: existUser.id,
     username: existUser.username,
+    name: existUser.name,
     password: existUser.password,
     rol: existUser.rol
     },
@@ -88,6 +90,7 @@ export const authService = async (req, res) => {
     res.status(200).json({
         id: userToken.id,
         username: userToken.username,
+        name: userToken.name,
         rol: userToken.rol
     })
     } catch (error) {

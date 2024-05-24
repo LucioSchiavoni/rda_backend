@@ -10,35 +10,83 @@ export const createNotasService = async (req, dataNotas) => {
     const file = req.file;
     const uploadFile = file ? `${req.protocol}://${req.hostname}:${process.env.PORT}/upload/${file.filename}` : '';
 
-    const { titulo, autorId, observaciones } = dataNotas;
+    const { titulo, autorId, asunto, estado } = dataNotas;
+
+    const parseId = parseInt(autorId)
 
     const newNotas = await prisma.nota.create({
         data: {
-            titulo,
-            observaciones,
-            autorId,
-            seguimiento: {
-                carpetas: {
-                    nombre,
-                    create: {
-                        archivo: {
-                            create: {
-                                    ruta: uploadFile,
-                                    nombre: file ? file.originalname : null
+            asunto: asunto,
+            titulo: titulo,
+            autorId: parseId,
+            estado: estado,
+            seguimiento:{
+                create:{
+                    archivos:{
+                        create:{
+                            ruta: uploadFile,
+                            nombre: file ? file.originalname : null
                         }
-                    },
-                        }
-                    }
-                
+                    } 
+                }
             }
-        },
-        include: {
-            autor: true
         }
     });
-
     return newNotas;
 };
+
+
+export const createCarpetaService = async (dataCarpetas) => {
+    
+    const {nombre, seguimientoId} = dataCarpetas;
+
+    const newCarpeta = await prisma.carpeta.create({
+        data:{
+            nombre: nombre,
+            seguimiento:{
+                connect:{id: seguimientoId}
+            }
+        }
+    })
+    return newCarpeta;
+}
+
+
+
+
+export const createFileByCarpetaService = async(req, dataFile) => {
+    try {
+    const {carpetaId, seguimientoId} = dataFile;
+    const file = req.file;
+    const uploadFile = file ? `${req.protocol}://${req.hostname}:${process.env.PORT}/upload/${file.filename}` : '';
+
+
+    const findFolder = await prisma.carpeta.findUnique({
+        where:{
+            id: parseInt(carpetaId)
+        }
+    })
+    if(!findFolder){
+        return res.json({error: "No se encuentra la carpeta"})
+    }
+    const newFile = await prisma.archivo.create({
+            data:{
+                ruta: uploadFile,
+                nombre: file ? file.originalname : null, 
+                carpeta:{
+                    connect: {id: parseInt(carpetaId)}
+                },
+                seguimiento:{
+                    connect: {id: parseInt(seguimientoId) }
+                }
+            }
+    })
+    return newFile;
+    } catch (error) {
+        console.log(error)
+    }
+ 
+}
 
 export const getNotasByEstadoService = async (estado) =>  {
     try {
@@ -162,16 +210,17 @@ export const getNotasService = async () => {
     return await prisma.nota.findMany({
         include: {
             seguimiento: {
-                include: {
-                    carpetas: {
-                        include: {
-                            archivos: true 
-                        }
-                    }
+              include: {
+                archivos: true,  
+                carpetas: {
+                  include: {
+                    archivos: true, 
+                  },
                 }
+              }
             },
-            autor: true 
-        }
+            autor: true  
+          }
     });
 }
 
@@ -183,7 +232,8 @@ export const getSeguimientoByIdService = async(nro_referencia) => {
             notaId: idInt
         },
         include: {
-            archivo: true
+            archivos: true,
+            carpetas: true
         }
     })
 }
