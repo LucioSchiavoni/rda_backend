@@ -7,32 +7,37 @@ dotenv.config()
 
 
 export const createNotasService = async (req, dataNotas) => {
-    
-    const file = req.file
-    const uploadFile = file ? `${req.protocol}://${req.hostname}:${process.env.PORT}/upload/${file.filename}`: '';
+    const file = req.file;
+    const uploadFile = file ? `${req.protocol}://${req.hostname}:${process.env.PORT}/upload/${file.filename}` : '';
 
-    const { titulo,  observaciones} = dataNotas;
- 
+    const { titulo, autorId, observaciones } = dataNotas;
+
     const newNotas = await prisma.nota.create({
         data: {
             titulo,
             observaciones,
+            autorId,
             seguimiento: {
-                create:{
-                    archivo:{
-                        create:{
+                create: {
+                    archivo: {
+                        create: {
                             ruta: uploadFile,
                             nombre: file ? file.originalname : null
                         }
+                    },
+                    carpetas: {
+                        create: []
                     }
                 }
             }
+        },
+        include: {
+            autor: true
         }
-    })
-    
-        
-    
-}
+    });
+
+    return newNotas;
+};
 
 export const getNotasByEstadoService = async (estado) =>  {
     try {
@@ -157,11 +162,16 @@ export const getNotasService = async () => {
         include: {
             seguimiento: {
                 include: {
-                    archivo: true
+                    carpetas: {
+                        include: {
+                            archivos: true 
+                        }
+                    }
                 }
-            }
+            },
+            autor: true 
         }
-    })
+    });
 }
 
 export const getSeguimientoByIdService = async(nro_referencia) => {

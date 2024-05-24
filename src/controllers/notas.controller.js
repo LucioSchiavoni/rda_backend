@@ -4,24 +4,12 @@ import { pedidoExist } from "../services/validations/prismaValidate.js";
 
 
 export const createNotas = async (req, res) => {
-    const { nro_pedido } = req.body;
 
     try {
-        if (!nro_pedido) {
-          
             const newNotas = await createNotasService(req, req.body);
             console.log(newNotas);
             res.send({ success: "Creacion exitosa" });
-            return;
-        }
-        const pedido = await pedidoExist(nro_pedido);
-        if (pedido === null) {
-            const newNotas = await createNotasService(req, req.body);
-            console.log(newNotas);
-            res.send({ success: "Creacion exitosa" });
-        } else if (pedido) {
-            res.status(404).json({ error: "Ya existe este numero de pedido" });
-        }
+        
     } catch (error) {
         handleError(res, error);
     }
