@@ -12,25 +12,18 @@ export const createNotasService = async (req, dataNotas) => {
 
     const { titulo, autorId, asunto, estado } = dataNotas;
 
-    const parseId = parseInt(autorId)
 
     const newNotas = await prisma.nota.create({
         data: {
             asunto: asunto,
             titulo: titulo,
-            autorId: parseId,
+            autorId: parseInt(autorId),
             estado: estado,
             seguimiento:{
-                create:{
-                    archivos:{
-                        create:{
-                            ruta: uploadFile,
-                            nombre: file ? file.originalname : null
-                        }
-                    } 
-                }
-            }
-        }
+                create:{}
+            },
+        },
+        include:{ seguimiento:true}
     });
     return newNotas;
 };
@@ -44,7 +37,7 @@ export const createCarpetaService = async (dataCarpetas) => {
         data:{
             nombre: nombre,
             seguimiento:{
-                connect:{id: seguimientoId}
+                connect:{id: parseInt(seguimientoId)}
             }
         }
     })
@@ -86,6 +79,23 @@ export const createFileByCarpetaService = async(req, dataFile) => {
         console.log(error)
     }
  
+}
+
+
+export const getArchivosByIdCarpetaService = async(data) => {
+
+    const {carpetaId, seguimientoId} = data;
+    try {
+        const archivosByCarpeta = await prisma.archivo.findMany({
+            where: {
+                carpetaId: parseInt(carpetaId),
+                seguimientoId: parseInt(seguimientoId)
+            }
+        })
+        return archivosByCarpeta;
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 export const getNotasByEstadoService = async (estado) =>  {
@@ -227,15 +237,26 @@ export const getNotasService = async () => {
 export const getSeguimientoByIdService = async(nro_referencia) => {
 
     const idInt = parseInt(nro_referencia)
-    return await prisma.seguimiento.findMany({
+    const seguimiento =  await prisma.seguimiento.findMany({
         where: {
             notaId: idInt
         },
         include: {
             archivos: true,
-            carpetas: true
+            carpetas:{
+                include:{
+                    archivos: true
+                }
+            }
         }
-    })
+    })  
+     const filteredSeguimiento = seguimiento.map(s => {
+        if (s.carpetas.some(c => c.archivos.length > 0)) {
+            s.archivos = s.archivos.filter(a => a.carpetaId === null);
+        }
+        return s;
+    });
+    return filteredSeguimiento;
 }
 
 export const getNotasByIdService = async (nro_referencia) => {
@@ -260,9 +281,6 @@ export const createFileService = async(req, notaId) => {
     const {nro_referencia} = notaId;
 
     const idInt = parseInt(nro_referencia)
-    const destino = await destinoId(idInt)
-
-    const ultimoDestino = destino[destino.length - 1]
 
     const file = req.file;
     const uploadFile = file ? `${req.protocol}://${req.hostname}:${process.env.PORT}/upload/${file.filename}` : '';
@@ -270,12 +288,12 @@ export const createFileService = async(req, notaId) => {
     try {
         const newFile = await prisma.seguimiento.create({
             data:{
-                destino: ultimoDestino,
                 fecha: new Date(),
-                archivo: {
+                archivos: {
                     create: {
                         ruta: uploadFile,
                         nombre: file ? file.originalname : null,
+                        
                     }
                 },
                 nota: {

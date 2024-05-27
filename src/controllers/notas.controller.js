@@ -1,4 +1,4 @@
-import { createNotasService, getNotasService, createFileService, getNotasByIdService, getSeguimientoByIdService, deleteNotaService, updateNotasService, downloadFileService, getNotasByEstadoService, createCarpetaService, createFileByCarpetaService } from "../services/prisma.js";
+import { createNotasService, getNotasService, createFileService, getNotasByIdService, getSeguimientoByIdService, deleteNotaService, updateNotasService, downloadFileService, getNotasByEstadoService, createCarpetaService, createFileByCarpetaService, getArchivosByIdCarpetaService } from "../services/prisma.js";
 
 
 
@@ -10,7 +10,8 @@ export const createNotas = async (req, res) => {
             res.send({ success: "Creacion exitosa" });
         
     } catch (error) {
-        handleError(res, error);
+        // handleError(res, error);
+        console.log(error)
     }
 };
 
@@ -37,7 +38,7 @@ export const createFileByCarpeta = async(req, res) =>{
 export const createCarpeta = async(req,res) => {
     try {
         console.log("nombre de carpeta: ",req.body)
-        const create = await createCarpetaService(req, req.body);
+        const create = await createCarpetaService(req.body);
         res.send({succes: "Carpeta creada correctamente"})
     } catch (error) {
         console.log(error)
@@ -51,6 +52,15 @@ export const getNotas = async(req, res) => {
         res.json(notas)
     } catch (error) {
         console.log(`Error al obtener las notas: ${error}`)
+    }
+}
+
+export const getArchivosByIdCarpeta = async(req, res) => {
+    try {
+        const response = await getArchivosByIdCarpetaService(req.body);
+        res.json(response)
+    } catch (error) {
+        console.log(error)
     }
 }
 
