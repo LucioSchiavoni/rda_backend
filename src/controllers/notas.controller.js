@@ -3,14 +3,14 @@ import { createNotasService, getNotasService, createFileService, getNotasByIdSer
 
 
 export const createNotas = async (req, res) => {
-
+   
     try {
             const newNotas = await createNotasService(req, res);
             console.log(newNotas);
             res.send({ success: "Creacion exitosa" });
         
     } catch (error) {
-        // handleError(res, error);
+        handleError(res, error);
         console.log(error)
     }
 };
@@ -65,12 +65,11 @@ export const getArchivosByIdCarpeta = async(req, res) => {
 }
 
 export const getNotasById = async (req, res) => {
-    const {nro_referencia} = req.params
+    const {id} = req.params
 
     try {
-        const notaById = await getNotasByIdService(nro_referencia)
+        const notaById = await getNotasByIdService(id)
         res.json(notaById)
-       
     } catch (error) {
         console.log("Error al obtener la nota por id: " ,error)
     }

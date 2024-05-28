@@ -9,7 +9,7 @@ dotenv.config()
 export const createNotasService = async (req, res) => {
 
 
-    const { content, authorId, title,  } = req.body;
+    const { content, authorId, title, state  } = req.body;
 
 
     const newNotas = await prisma.post.create({
@@ -17,7 +17,7 @@ export const createNotasService = async (req, res) => {
             title: title,
             content: content,
             authorId: parseInt(authorId),
-            state: state === 'PRIVATE' ? 'PRIVATE' : 'PUBLIC'
+            state: state
         }
 
     });
@@ -156,14 +156,14 @@ export const updateNotasService = async( dataNotas) => {
                     data:{
                         content: post.content,
                         title: post.title,
-                        fecha: new Date(),
-                        archivo: {
+                        updatedAt: new Date(),
+                        file: {
                             create:{
-                                ruta:archivo.archivo.ruta,
-                                nombre: archivo.archivo.nombre
+                                url:file.file.url,
+                                fileName: file.file.fileName
                             }
                         },
-                        nota: {connect: {nro_referencia: referenciaInt}}, 
+                        post: {connect: {id: parseId}}, 
                     
                     }
                 })
@@ -181,8 +181,12 @@ export const getNotasService = async () => {
       return await prisma.post.findMany({
       include:{
         author:true,
-    folder: true,
-    file:{where: {folderId:null}}
+        folder: {
+            include:{
+                file:true
+            }
+        },
+        file:{where: {folderId:null}}
 
       }
 
@@ -193,74 +197,67 @@ export const getNotasService = async () => {
     }
 }
 
-export const getSeguimientoByIdService = async(nro_referencia) => {
+export const getSeguimientoByIdService = async(id) => {
 
-    const idInt = parseInt(nro_referencia)
-    const seguimiento =  await prisma.seguimiento.findMany({
+    const idInt = parseInt(id)
+    const findPost =  await prisma.post.findMany({
         where: {
-            notaId: idInt
+            postId: idInt
         },
         include: {
-            archivos: true,
-            carpetas:{
+            file: true,
+            folder:{
                 include:{
-                    archivos: true
+                    file: true
                 }
             }
         }
     })  
-     const filteredSeguimiento = seguimiento.map(s => {
-        if (s.carpetas.some(c => c.archivos.length > 0)) {
-            s.archivos = s.archivos.filter(a => a.carpetaId === null);
+     const filteredSeguimiento = findPost.map(s => {
+        if (s.folder.some(c => c.archivos.length > 0)) {
+            s.file = s.file.filter(a => a.folderId === null);
         }
         return s;
     });
     return filteredSeguimiento;
 }
 
-export const getNotasByIdService = async (nro_referencia) => {
+export const getNotasByIdService = async (id) => {
 
-    const idInt = parseInt(nro_referencia)
-    return await prisma.nota.findFirst({
+    const idInt = parseInt(id)
+    return await prisma.post.findFirst({
         where: {
-            nro_referencia: idInt
+            id: idInt
         },
         include : {
-            seguimiento: {
-                include: {
-                    archivo: true
+            file:{ where:{folderId: null}},
+            folder: {
+                include:{
+                    file:true
                 }
-            }
+            },
+            permissions:true,
+            author:true
         }
     })
 }
 
 export const createFileService = async(req, notaId) => {
 
-    const {nro_referencia} = notaId;
+    const {id} = notaId;
 
-    const idInt = parseInt(nro_referencia)
 
     const file = req.file;
     const uploadFile = file ? `${req.protocol}://${req.hostname}:${process.env.PORT}/upload/${file.filename}` : '';
 
     try {
-        const newFile = await prisma.seguimiento.create({
+        const newFile = await prisma.file.create({
             data:{
-                fecha: new Date(),
-                archivos: {
-                    create: {
-                        ruta: uploadFile,
-                        nombre: file ? file.originalname : null,
-                        
-                    }
-                },
-                nota: {
-                    connect: {
-                        nro_referencia: idInt
-                    }
-                }
+            url: uploadFile,
+            nameFile: file ? file.originalname : null,
+            post: {connect: {id: parseInt(id)}}, 
             }
+
         })
         return newFile;
     } catch (error) {
@@ -273,9 +270,9 @@ export const deleteNotaService = async(notaId) => {
     const idInt = parseInt(notaId)
   
     try {
-        await prisma.nota.deleteMany({
+        await prisma.post.deleteMany({
             where:{
-                nro_referencia:idInt
+                id:idInt
             }
         })
 

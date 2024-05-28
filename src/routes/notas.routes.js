@@ -6,10 +6,10 @@ import upload from "../middlewares/uploadFile.js";
 const notasRouter = Router();
 
 
-notasRouter.post("/create", upload.single('file[url]') , createNotas)
+notasRouter.post("/create" , createNotas)
 notasRouter.get("/allNotas", getNotas)
 notasRouter.post("/createFile", upload.single('file[url]'), createFile)
-notasRouter.get("/nota/:id", getNotasById)
+notasRouter.get("/post/:id", getNotasById)
 notasRouter.get("/seguimiento/:id", getSeguimientoById)
 notasRouter.delete("/deleteNota/:id", deleteNota)
 notasRouter.put("/updateNota/:id", updateNotas)
