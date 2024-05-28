@@ -26,7 +26,7 @@ export const registerService = async (req,res) => {
                 username: username,
                 name: name,
                 password: hashPassword,
-                rol: rol
+                rolUser: rol
             }
         })
         res.json({success: "Usuario creado con exito"})

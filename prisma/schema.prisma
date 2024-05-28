@@ -8,12 +8,63 @@ datasource db {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  username String @unique
-  password String
-  name String
-  rol      RolUser
-  notas    Nota[]  
+  id             Int               @id @default(autoincrement())
+  username       String            @unique
+  name           String?
+  password       String
+  createdAt      DateTime          @default(now())
+  rolUser        RolUser
+  posts          Post[]            @relation("PostAuthor")
+  postPermissions PostPermission[]
+}
+
+model Post {
+  id             Int               @id @default(autoincrement())
+  title          String
+  content        String?
+  authorId       Int
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+  author         User              @relation("PostAuthor", fields: [authorId], references: [id])
+  permissions    PostPermission[]
+  state StatePost   @default(PUBLIC)              
+  file File[]
+  folder Folder[]
+}
+
+enum StatePost {
+  PUBLIC 
+  PRIVATE
+}
+
+model File {
+  id Int @id @default(autoincrement())
+  postId         Int
+  folderId Int?
+  nameFile String
+  createdAt      DateTime          @default(now())
+  url   String 
+  post           Post              @relation(fields: [postId], references: [id])
+  folder Folder? @relation(fields: [folderId], references: [id])
+}
+
+model Folder {
+  id Int @id @default(autoincrement())
+  postId Int
+  nameFolder String
+  createdAt      DateTime          @default(now())
+  file File[]
+  post           Post              @relation(fields: [postId], references: [id])
+}
+
+model PostPermission {
+  id             Int               @id @default(autoincrement())
+  postId         Int
+  userId         Int
+  permission     Permission        @default(WRITE)
+  post           Post              @relation(fields: [postId], references: [id])
+  user           User              @relation(fields: [userId], references: [id])
+  @@unique([postId, userId])
 }
 
 enum RolUser {
@@ -21,47 +72,7 @@ enum RolUser {
   USER
 }
 
-enum Estado {
-  PUBLICO 
-  PRIVADO
+enum Permission {
+  READ
+  WRITE
 }
-
-model Nota {
-  nro_referencia Int           @id @default(autoincrement())
-  titulo         String?  
-  asunto String?       
-  seguimiento    Seguimiento[]
-  autorId        Int
-  autor          User @relation(fields: [autorId], references: [id])
-  estado         Estado @default(PUBLICO)
-}
-
-model Archivo {
-  id           Int      @id @default(autoincrement())
-  ruta         String        
-  nombre       String?        
-  seguimiento  Seguimiento? @relation(fields: [seguimientoId], references: [id])
-  seguimientoId Int?
-  carpetaId    Int?
-  carpeta      Carpeta? @relation(fields: [carpetaId], references: [id])
-}
-
-model Carpeta {
-  id           Int         @id @default(autoincrement())
-  nombre       String
-  archivos     Archivo[]
-  seguimiento  Seguimiento @relation(fields: [seguimientoId], references: [id])
-  seguimientoId Int
-}
-
-model Seguimiento {
-  id           Int         @id @default(autoincrement())
-  fecha        DateTime    @default(now())
-  notaId       Int
-  nota         Nota        @relation(fields: [notaId], references: [nro_referencia], onDelete: Cascade)
-  archivos     Archivo[]
-  carpetas     Carpeta[]
-  
-  @@index([notaId], map: "Seguimiento_notaId_fkey")
-}
-

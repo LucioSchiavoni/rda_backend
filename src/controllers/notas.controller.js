@@ -5,7 +5,7 @@ import { createNotasService, getNotasService, createFileService, getNotasByIdSer
 export const createNotas = async (req, res) => {
 
     try {
-            const newNotas = await createNotasService(req, req.body);
+            const newNotas = await createNotasService(req, res);
             console.log(newNotas);
             res.send({ success: "Creacion exitosa" });
         
@@ -49,7 +49,7 @@ export const createCarpeta = async(req,res) => {
 export const getNotas = async(req, res) => {
     try {
         const notas = await getNotasService();
-        res.json(notas)
+        return res.json(notas)
     } catch (error) {
         console.log(`Error al obtener las notas: ${error}`)
     }

@@ -1,0 +1,2 @@
+-- AddForeignKey
+ALTER TABLE `Folder` ADD CONSTRAINT `Folder_postId_fkey` FOREIGN KEY (`postId`) REFERENCES `Post`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

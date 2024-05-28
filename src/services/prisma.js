@@ -6,24 +6,20 @@ import { destinoId } from "./validations/prismaValidate.js";
 dotenv.config()
 
 
-export const createNotasService = async (req, dataNotas) => {
-    const file = req.file;
-    const uploadFile = file ? `${req.protocol}://${req.hostname}:${process.env.PORT}/upload/${file.filename}` : '';
-
-    const { titulo, autorId, asunto, estado } = dataNotas;
+export const createNotasService = async (req, res) => {
 
 
-    const newNotas = await prisma.nota.create({
+    const { content, authorId, title,  } = req.body;
+
+
+    const newNotas = await prisma.post.create({
         data: {
-            asunto: asunto,
-            titulo: titulo,
-            autorId: parseInt(autorId),
-            estado: estado,
-            seguimiento:{
-                create:{}
-            },
-        },
-        include:{ seguimiento:true}
+            title: title,
+            content: content,
+            authorId: parseInt(authorId),
+            state: state === 'PRIVATE' ? 'PRIVATE' : 'PUBLIC'
+        }
+
     });
     return newNotas;
 };
@@ -31,14 +27,12 @@ export const createNotasService = async (req, dataNotas) => {
 
 export const createCarpetaService = async (dataCarpetas) => {
     
-    const {nombre, seguimientoId} = dataCarpetas;
+    const {nameFolder, postId} = dataCarpetas;
 
-    const newCarpeta = await prisma.carpeta.create({
+    const newCarpeta = await prisma.folder.create({
         data:{
-            nombre: nombre,
-            seguimiento:{
-                connect:{id: parseInt(seguimientoId)}
-            }
+            nameFolder: nameFolder,
+            postId: postId
         }
     })
     return newCarpeta;
@@ -49,28 +43,27 @@ export const createCarpetaService = async (dataCarpetas) => {
 
 export const createFileByCarpetaService = async(req, dataFile) => {
     try {
-    const {carpetaId, seguimientoId} = dataFile;
+    const {folderId, postId} = dataFile;
     const file = req.file;
     const uploadFile = file ? `${req.protocol}://${req.hostname}:${process.env.PORT}/upload/${file.filename}` : '';
 
-
-    const findFolder = await prisma.carpeta.findUnique({
+    const findFolder = await prisma.folder.findUnique({
         where:{
-            id: parseInt(carpetaId)
+            id: parseInt(folderId)
         }
     })
     if(!findFolder){
         return res.json({error: "No se encuentra la carpeta"})
     }
-    const newFile = await prisma.archivo.create({
+    const newFile = await prisma.file.create({
             data:{
-                ruta: uploadFile,
-                nombre: file ? file.originalname : null, 
-                carpeta:{
-                    connect: {id: parseInt(carpetaId)}
+                url: uploadFile,
+                nameFile: file ? file.originalname : null, 
+                folder:{
+                    connect: {id: parseInt(folderId)}
                 },
-                seguimiento:{
-                    connect: {id: parseInt(seguimientoId) }
+                post:{
+                    connect: {id: parseInt(postId) }
                 }
             }
     })
@@ -84,12 +77,12 @@ export const createFileByCarpetaService = async(req, dataFile) => {
 
 export const getArchivosByIdCarpetaService = async(data) => {
 
-    const {carpetaId, seguimientoId} = data;
+    const {folderId, postId} = data;
     try {
-        const archivosByCarpeta = await prisma.archivo.findMany({
+        const archivosByCarpeta = await prisma.file.findMany({
             where: {
-                carpetaId: parseInt(carpetaId),
-                seguimientoId: parseInt(seguimientoId)
+                folderId: parseInt(folderId),
+                postId: parseInt(postId)
             }
         })
         return archivosByCarpeta;
@@ -103,14 +96,8 @@ export const getNotasByEstadoService = async (estado) =>  {
         const nota = await prisma.nota.findMany({
             where: {
                 estado: estado
-            },
-            include:{
-                seguimiento: {
-                    include: {
-                        archivo: true
-                    }
-                }
-            },
+            }
+           
         })
         return nota;
     } catch (error) {
@@ -122,16 +109,16 @@ export const downloadFileService = async (req, res) => {
 
     try {
         const { id } = req.params;
-        const archivo = await prisma.archivo.findUnique({
+        const existFile = await prisma.file.findUnique({
             where: { id: parseInt(id) },
         });
 
-        if (!archivo) {
+        if (!existFile) {
             console.log("Archivo no encontrado");
             return res.status(404).send("Archivo no encontrado");
         }
         
-        const fileUrl = archivo.ruta;
+        const fileUrl = file.url;
         const rutaLocalRelativa = fileUrl.replace(/^.*\/\/[^\/]+/, '');
         const rutaEnPC = `src/middlewares${rutaLocalRelativa}`;
         
@@ -142,50 +129,33 @@ export const downloadFileService = async (req, res) => {
     }
 }
 
-export const updateNotasService = async(nro_referencia, dataNotas) => {
+export const updateNotasService = async( dataNotas) => {
     
-    const { motivo, nro_pedido, estado, observaciones} = dataNotas
-    const pedidoInt = parseInt(nro_pedido)
-    const referenciaInt = parseInt(nro_referencia)
+    const { id, title, content} = dataNotas
+    const parseId = parseInt(id)
     try {
-        const existingNota = await prisma.nota.findUnique({
+        const existingNota = await prisma.post.findUnique({
             where: {
-                nro_referencia: referenciaInt
+                id: parseId
             },
-            include: {
-                seguimiento: {
-                    include: {
-                        archivo: true
-                    }
-                }
-            }
-            
-        });
-
+            });
+    
         if (!existingNota) {
             throw new Error('Nota no encontrada');
         }
 
         const updateData = {};
 
-        if (motivo !== undefined) {
-            updateData.motivo = motivo;
+        if (title !== undefined) {
+            updateData.title = title;
         }
-        if (nro_pedido !== undefined) {
-            updateData.nro_pedido = pedidoInt;
+        if (content !== undefined) {
+            updateData.content = content;
         }
-        if (estado !== undefined) {
-            updateData.estado = estado;
-            if(estado === 'FINALIZADO'){
-            const archivo = await prisma.seguimiento.findFirst({
-                where: {
-                    notaId: referenciaInt
-                },
-                include: {archivo: true}
-            })
-                await prisma.seguimiento.create({
+                await prisma.post.update({
                     data:{
-                        destino: archivo.destino,
+                        content: post.content,
+                        title: post.title,
                         fecha: new Date(),
                         archivo: {
                             create:{
@@ -198,40 +168,29 @@ export const updateNotasService = async(nro_referencia, dataNotas) => {
                     }
                 })
             }
-        }
-        if (observaciones !== undefined) {
-            updateData.observaciones = observaciones;
-        }
-    
-        const updatedNota = await prisma.nota.update({
-            where: {
-                nro_referencia: referenciaInt
-            },
-            data: updateData
-        });
-        return { success: "Nota actualizada correctamente", nota: updatedNota };
-    } catch (error) {
-        console.log(error)
+            
+       
+    catch (error) {
+        return    console.log(error)
     }
         
 }
 
 export const getNotasService = async () => {
-    return await prisma.nota.findMany({
-        include: {
-            seguimiento: {
-              include: {
-                archivos: true,  
-                carpetas: {
-                  include: {
-                    archivos: true, 
-                  },
-                }
-              }
-            },
-            autor: true  
-          }
-    });
+    try {
+      return await prisma.post.findMany({
+      include:{
+        author:true,
+    folder: true,
+    file:{where: {folderId:null}}
+
+      }
+
+    }); 
+
+    } catch (error) {
+       console.log(error)
+    }
 }
 
 export const getSeguimientoByIdService = async(nro_referencia) => {
