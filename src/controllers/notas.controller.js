@@ -77,7 +77,8 @@ export const getNotasById = async (req, res) => {
 
 export const createFile = async (req, res) => {
     try {
-        const updateFile = await createFileService(req, req.body)
+        const id = JSON.parse(req.body.id)
+        const updateFile = await createFileService(req, id)
         res.json({succes: "Se creo el archivo correctamente!"})
     } catch (error) {
         console.log(error)
