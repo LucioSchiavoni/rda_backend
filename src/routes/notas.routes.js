@@ -15,8 +15,8 @@ notasRouter.delete("/deleteNota/:id", deleteNota)
 notasRouter.put("/updateNota/:id", updateNotas)
 notasRouter.get("/download/:id", downloadFile)
 notasRouter.get("/nota/estado/:estado", getNotaByEstado)
-notasRouter.post("/create/carpeta", createCarpeta)
-notasRouter.post("/create/carpeta/file", upload.single('file[url]'), createFileByCarpeta)
-notasRouter.get("/carpeta/archivos", getArchivosByIdCarpeta) //es redundante, con la ruta de  seguimiento/:id  devuelve todo
+notasRouter.post("/create/folder", createCarpeta)
+notasRouter.post("/create/folder/file", upload.single('file[url]'), createFileByCarpeta)
+notasRouter.get("/folder/file", getArchivosByIdCarpeta) //es redundante, con la ruta de  seguimiento/:id  devuelve todo
 
 export default notasRouter;
