@@ -75,21 +75,25 @@ export const createFileByCarpetaService = async(req, dataFile) => {
 }
 
 
-export const getArchivosByIdCarpetaService = async(data) => {
-
-    const {postId, folderId} = data;
+export const getArchivosByIdCarpetaService = async (data) => {
+    const { postId, folderId } = data;
     try {
         const archivosByCarpeta = await prisma.file.findMany({
             where: {
-                folderId:folderId,
+                folderId:{
+                    not: null
+                }
+            },
+            folderId: folderId,
                 postId: postId
-            }
-        })
+            });
         return archivosByCarpeta;
     } catch (error) {
-        console.log(error)
+        console.log(error);
+        throw new Error('Error al obtener archivos por carpeta');
     }
-}
+};
+
 
 export const getNotasByEstadoService = async (estado) =>  {
     try {
@@ -118,7 +122,7 @@ export const downloadFileService = async (req, res) => {
             return res.status(404).send("Archivo no encontrado");
         }
         
-        const fileUrl = file.url;
+        const fileUrl = existFile.url;
         const rutaLocalRelativa = fileUrl.replace(/^.*\/\/[^\/]+/, '');
         const rutaEnPC = `src/middlewares${rutaLocalRelativa}`;
         
