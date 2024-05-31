@@ -17,6 +17,6 @@ notasRouter.get("/download/:id", downloadFile)
 notasRouter.get("/nota/estado/:estado", getNotaByEstado)
 notasRouter.post("/create/folder", createCarpeta)
 notasRouter.post("/create/folder/file", upload.single('file[url]'), createFileByCarpeta)
-notasRouter.get("/folder/file", getArchivosByIdCarpeta) //es redundante, con la ruta de  seguimiento/:id  devuelve todo
+notasRouter.get("/folder/file/:postId/:folderId", getArchivosByIdCarpeta) //es redundante, con la ruta de  seguimiento/:id  devuelve todo
 
 export default notasRouter;

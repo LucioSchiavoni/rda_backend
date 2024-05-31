@@ -77,12 +77,12 @@ export const createFileByCarpetaService = async(req, dataFile) => {
 
 export const getArchivosByIdCarpetaService = async(data) => {
 
-    const {folderId, postId} = data;
+    const {postId, folderId} = data;
     try {
         const archivosByCarpeta = await prisma.file.findMany({
             where: {
-                folderId: parseInt(folderId),
-                postId: parseInt(postId)
+                folderId:folderId,
+                postId: postId
             }
         })
         return archivosByCarpeta;

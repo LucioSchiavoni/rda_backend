@@ -56,8 +56,11 @@ export const getNotas = async(req, res) => {
 }
 
 export const getArchivosByIdCarpeta = async(req, res) => {
-    try {
-        const response = await getArchivosByIdCarpetaService(req.body);
+
+    const {postId, folderId} = req.params;
+ 
+    try {  
+        const response = await getArchivosByIdCarpetaService(postId, folderId);
         res.json(response)
     } catch (error) {
         console.log(error)
