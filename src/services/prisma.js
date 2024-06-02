@@ -259,7 +259,7 @@ export const createFileService = async(req, notaId) => {
             data:{
             url: uploadFile,
             nameFile: file ? file.originalname : null,
-            post: {connect: {id: parseInt(id)}}, 
+            postId: parseInt(id), 
             }
 
         })
