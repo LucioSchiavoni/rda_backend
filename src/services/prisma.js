@@ -6,11 +6,9 @@ import { destinoId } from "./validations/prismaValidate.js";
 dotenv.config()
 
 
-export const createNotasService = async (req, res) => {
+export const createNotasService = async (data) => {
 
-
-    const { content, authorId, title, state  } = req.body;
-
+    const { content, authorId, title, state  } = data;
 
     const newNotas = await prisma.post.create({
         data: {
@@ -80,13 +78,16 @@ export const getArchivosByIdCarpetaService = async (data) => {
     try {
         const archivosByCarpeta = await prisma.file.findMany({
             where: {
+                postId: parseInt(postId),
+                folder:{
+                    id:parseInt(folderId)
+                },
                 folderId:{
                     not: null
                 }
-            },
-            folderId: folderId,
-                postId: postId
+            }
             });
+           
         return archivosByCarpeta;
     } catch (error) {
         console.log(error);

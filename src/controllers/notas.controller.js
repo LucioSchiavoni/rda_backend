@@ -3,14 +3,15 @@ import { createNotasService, getNotasService, createFileService, getNotasByIdSer
 
 
 export const createNotas = async (req, res) => {
-   
+    
+    const { title, content, state, authorId } = req.body;
     try {
-            const newNotas = await createNotasService(req, res);
-            console.log(newNotas);
+
+            const newNotas = await createNotasService({title, content, state, authorId});
+           
             res.send({ success: "Creacion exitosa" });
         
     } catch (error) {
-        handleError(res, error);
         console.log(error)
     }
 };
@@ -27,7 +28,6 @@ export const updateNotas = async(req,res) => {
 
 export const createFileByCarpeta = async(req, res) =>{
     try {
-        console.log("datos", req.body)
         const create = await createFileByCarpetaService(req, req.body)
         res.send({succes: "Creacion del archivo exitoso"})
     } catch (error) {
@@ -37,8 +37,9 @@ export const createFileByCarpeta = async(req, res) =>{
 
 export const createCarpeta = async(req,res) => {
     try {
-        console.log("nombre de carpeta: ",req.body)
-        const create = await createCarpetaService(req.body);
+        const {nameFolder, postId} = req.body;
+
+        const create = await createCarpetaService({nameFolder, postId});
         res.send({succes: "Carpeta creada correctamente"})
     } catch (error) {
         console.log(error)
@@ -60,7 +61,7 @@ export const getArchivosByIdCarpeta = async(req, res) => {
     const {postId, folderId} = req.params;
  
     try {  
-        const response = await getArchivosByIdCarpetaService(postId, folderId);
+        const response = await getArchivosByIdCarpetaService({postId, folderId});
         res.json(response)
     } catch (error) {
         console.log(error)
