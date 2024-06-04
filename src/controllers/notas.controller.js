@@ -1,4 +1,4 @@
-import { createNotasService, getNotasService, createFileService, getNotasByIdService, getSeguimientoByIdService, deleteNotaService, updateNotasService, downloadFileService, getNotasByEstadoService, createCarpetaService, createFileByCarpetaService, getArchivosByIdCarpetaService } from "../services/prisma.js";
+import { createNotasService, getNotasService, createFileService, getNotasByIdService, getSeguimientoByIdService, deleteNotaService, updateNotasService, downloadFileService, getNotasByEstadoService, createCarpetaService, createFileByCarpetaService, getArchivosByIdCarpetaService, deleteCarpetaService } from "../services/prisma.js";
 
 
 
@@ -40,7 +40,7 @@ export const createCarpeta = async(req,res) => {
         const {nameFolder, postId} = req.body;
 
         const create = await createCarpetaService({nameFolder, postId});
-        res.send({succes: "Carpeta creada correctamente"})
+        return res.json(create)
     } catch (error) {
         console.log(error)
     }
@@ -129,4 +129,16 @@ export const getNotaByEstado = async(req,res) => {
     } catch (error) {
         console.log(error)
     }
+}
+
+export const deleteCarpeta = async(req,res) => {
+
+    try {
+        console.log("la data", req.body)
+        const data = await deleteCarpetaService(req.body)
+        return data
+    } catch (error) {
+        console.log(error)
+    }
+
 }

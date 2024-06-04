@@ -1,6 +1,6 @@
 import prisma from "../config/db.js";
 import dotenv from 'dotenv'
-import { destinoId } from "./validations/prismaValidate.js";
+
 
 
 dotenv.config()
@@ -26,16 +26,36 @@ export const createNotasService = async (data) => {
 export const createCarpetaService = async (dataCarpetas) => {
     
     const {nameFolder, postId} = dataCarpetas;
-
+      
+    const findFolder = await prisma.folder.findFirst({
+        where:{
+            nameFolder: nameFolder
+        }
+    })
+    if(findFolder){
+        return {message: "Ya existe la carpeta"} 
+    }
     const newCarpeta = await prisma.folder.create({
         data:{
             nameFolder: nameFolder,
             postId: postId
         }
     })
-    return newCarpeta;
+    return { message: "Carpeta creada con exito"};
 }
 
+export const deleteCarpetaService = async(data) => {
+
+    const {folderId, postId} = data;
+
+    const deleteFolder = await prisma.folder.delete({
+        where:{
+            id: folderId,
+            postId: postId
+        }
+    })
+    return deleteFolder;
+}
 
 
 
