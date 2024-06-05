@@ -22,6 +22,6 @@ notasRouter.post("/create/folder", createCarpeta)
 notasRouter.post("/create/folder/file", upload.single('file[url]'), createFileByCarpeta)
 
 notasRouter.get("/folder/file/:postId/:folderId", getArchivosByIdCarpeta) 
-notasRouter.delete("/delete/folder", deleteCarpeta )
+notasRouter.delete("/delete/folder/:postId/:folderId", deleteCarpeta )
 
 export default notasRouter;

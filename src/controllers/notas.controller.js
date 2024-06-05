@@ -132,11 +132,10 @@ export const getNotaByEstado = async(req,res) => {
 }
 
 export const deleteCarpeta = async(req,res) => {
-
+        const {postId, folderId} = req.params
     try {
-        console.log("la data", req.body)
-        const data = await deleteCarpetaService(req.body)
-        return data
+        const data = await deleteCarpetaService({postId, folderId})
+        res.json({succes: "Carpeta borrada con exito"})
     } catch (error) {
         console.log(error)
     }

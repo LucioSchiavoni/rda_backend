@@ -46,12 +46,12 @@ export const createCarpetaService = async (dataCarpetas) => {
 
 export const deleteCarpetaService = async(data) => {
 
-    const {folderId, postId} = data;
+    const {postId, folderId} = data;
 
     const deleteFolder = await prisma.folder.delete({
         where:{
-            id: folderId,
-            postId: postId
+            id: parseInt(folderId),
+            postId: parseInt(postId) 
         }
     })
     return deleteFolder;
