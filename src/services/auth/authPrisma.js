@@ -56,7 +56,7 @@ export const loginService = async (req, res) => {
     username: existUser.username,
     name: existUser.name,
     password: existUser.password,
-    rol: existUser.rol
+    rolUser: existUser.rolUser
     },
     process.env.SECRET_KEY , 
     { expiresIn: '12h' });
@@ -91,7 +91,7 @@ export const authService = async (req, res) => {
         id: userToken.id,
         username: userToken.username,
         name: userToken.name,
-        rol: userToken.rol
+        rolUser: userToken.rolUser
     })
     } catch (error) {
         if (error instanceof jwt.JsonWebTokenError) {
