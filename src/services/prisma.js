@@ -306,3 +306,19 @@ export const deleteNotaService = async(notaId) => {
         console.log(error)
     }
 }
+
+
+export const deleteFileService = async(data) => {
+        const {postId, fileId} = data;
+    try {
+        await prisma.file.delete({
+         where:{
+            id: parseInt(fileId),
+            postId: parseInt(postId)
+         }
+        })
+        return {success: "Archivo eliminado"};    
+    } catch (error) {
+        console.log(error)
+    }
+}
