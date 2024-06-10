@@ -122,3 +122,17 @@ export const changePasswordService = async(req,res) => {
         console.log(error)
     }
 }
+
+
+export const getAllUserService = async() => {
+    try {
+        return await prisma.user.findMany({
+            include:{
+                posts:true,
+                postPermissions:true
+            }
+        })
+    } catch (error) {
+        console.log(error)
+    }
+}

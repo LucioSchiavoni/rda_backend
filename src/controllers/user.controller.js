@@ -1,4 +1,4 @@
-import { loginService, authService, registerService, changePasswordService } from "../services/auth/authPrisma.js";
+import { loginService, authService, registerService, changePasswordService, getAllUserService } from "../services/auth/authPrisma.js";
 
 
 
@@ -35,6 +35,15 @@ export const changePassword = async(req,res) => {
     try {
         const changePassword  = await changePasswordService(req, res)
         return changePassword
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export const getAllUser = async(req,res) => {
+    try {
+        const getUser = await getAllUserService()
+        res.json(getUser)
     } catch (error) {
         console.log(error)
     }
