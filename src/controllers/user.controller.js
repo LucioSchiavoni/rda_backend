@@ -1,4 +1,4 @@
-import { loginService, authService, registerService, changePasswordService, getAllUserService } from "../services/auth/authPrisma.js";
+import { loginService, authService, registerService, changePasswordService, getAllUserService, deleteUserService } from "../services/auth/authPrisma.js";
 
 
 
@@ -44,6 +44,15 @@ export const getAllUser = async(req,res) => {
     try {
         const getUser = await getAllUserService()
         res.json(getUser)
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export const deleteUser = async(req,res) => {
+    try {
+        const deleteUser = await deleteUserService(req,res)
+        return res.json({success:"Usuario eliminado con exito"})
     } catch (error) {
         console.log(error)
     }

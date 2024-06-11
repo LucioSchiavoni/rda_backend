@@ -25,8 +25,8 @@ model Post {
   authorId       Int
   createdAt      DateTime          @default(now())
   updatedAt      DateTime          @updatedAt
-  author         User              @relation("PostAuthor", fields: [authorId], references: [id])
-  permissions    PostPermission[]
+  author         User              @relation("PostAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  permissions    PostPermission[]   
   state StatePost   @default(PUBLIC)              
   file File[]
   folder Folder[]

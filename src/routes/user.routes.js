@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { login, auth, register, changePassword, getAllUser } from "../controllers/user.controller.js";
+import { login, auth, register, changePassword, getAllUser, deleteUser } from "../controllers/user.controller.js";
 
 
 
@@ -11,5 +11,7 @@ userRouter.get("/auth", auth)
 userRouter.post("/register", register)
 userRouter.put("/changePassword/:id", changePassword)
 userRouter.get("/users", getAllUser)
+userRouter.delete("/deleteUser/:id", deleteUser)
+
 
 export default userRouter;

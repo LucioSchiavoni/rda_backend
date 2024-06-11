@@ -136,3 +136,20 @@ export const getAllUserService = async() => {
         console.log(error)
     }
 }
+
+
+export const deleteUserService = async(req,res) => {
+
+    const {id} = req.params;
+    
+    try {
+        const res = await prisma.user.delete({
+            where:{
+                id: parseInt(id)
+            }
+        })
+        return res
+    } catch (error) {
+        console.log(error)
+    }
+}
