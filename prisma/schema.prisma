@@ -44,7 +44,7 @@ model File {
   nameFile String
   createdAt      DateTime          @default(now())
   url   String 
-  post           Post              @relation(fields: [postId], references: [id])
+  post           Post              @relation(fields: [postId], references: [id], onDelete: Cascade)
   folder Folder? @relation(fields: [folderId], references: [id])
 }
 
@@ -54,7 +54,7 @@ model Folder {
   nameFolder String
   createdAt      DateTime          @default(now())
   file File[]
-  post           Post              @relation(fields: [postId], references: [id])
+  post           Post              @relation(fields: [postId], references: [id], onDelete: Cascade)
 }
 
 model PostPermission {
@@ -62,7 +62,7 @@ model PostPermission {
   postId         Int
   userId         Int
   permission     Permission        @default(WRITE)
-  post           Post              @relation(fields: [postId], references: [id])
+  post           Post              @relation(fields: [postId], references: [id], onDelete: Cascade)
   user           User              @relation(fields: [userId], references: [id])
   @@unique([postId, userId])
 }

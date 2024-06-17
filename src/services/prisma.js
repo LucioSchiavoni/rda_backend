@@ -322,3 +322,18 @@ export const deleteFileService = async(data) => {
         console.log(error)
     }
 }
+
+export const deletePostService = async(id) => {
+
+    const idInt = parseInt(id)    
+
+    try {
+        return await prisma.post.delete({
+            where:{
+              id: idInt
+            }
+        })
+    } catch (error) {
+        console.log(error)
+    }
+}

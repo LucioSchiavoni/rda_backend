@@ -1,4 +1,4 @@
-import { createNotasService, getNotasService, createFileService, getNotasByIdService, getSeguimientoByIdService, deleteNotaService, updateNotasService, downloadFileService, getNotasByEstadoService, createCarpetaService, createFileByCarpetaService, getArchivosByIdCarpetaService, deleteCarpetaService, deleteFileService } from "../services/prisma.js";
+import { createNotasService, getNotasService, createFileService, getNotasByIdService, getSeguimientoByIdService, deleteNotaService, updateNotasService, downloadFileService, getNotasByEstadoService, createCarpetaService, createFileByCarpetaService, getArchivosByIdCarpetaService, deleteCarpetaService, deleteFileService, deletePostService } from "../services/prisma.js";
 
 
 
@@ -148,6 +148,16 @@ export const deleteFile = async(req,res) => {
     try {
         const data = await deleteFileService({postId, fileId})
         res.json({success: "Archivo eliminado"})
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export const deletePost = async(req,res) => {
+    const {postId} = req.params;
+    try {
+        const data = await deletePostService(postId)
+        res.json({success: "Repositorio eliminado"})
     } catch (error) {
         console.log(error)
     }
