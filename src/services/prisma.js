@@ -63,7 +63,7 @@ export const createFileByCarpetaService = async(req, dataFile) => {
     try {
     const {folderId, postId} = dataFile;
     const file = req.file;
-    const uploadFile = file ? `${req.protocol}://${req.hostname}:${process.env.PORT}/upload/${file.filename}` : '';
+    const uploadFile = file ? `${process.env.URL_UPLOAD}/upload/${file.filename}` : '';
 
     const findFolder = await prisma.folder.findUnique({
         where:{
