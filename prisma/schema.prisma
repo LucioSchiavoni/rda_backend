@@ -16,6 +16,7 @@ model User {
   rolUser        RolUser
   posts          Post[]            @relation("PostAuthor")
   postPermissions PostPermission[]
+  document Document[]
 }
 
 model Post {
@@ -55,6 +56,24 @@ model Folder {
   createdAt      DateTime          @default(now())
   file File[]
   post           Post              @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+
+model Document {
+  id Int @id @default(autoincrement())
+  authorId Int
+  title String
+  description String?
+  createdAt DateTime @default(now())
+  collaborators Collaborators[]
+  author  User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+}
+
+model Collaborators {
+  id Int @id @default(autoincrement())
+  documentId Int
+  userId Int
+  name String
+  document Document @relation(fields: [documentId], references: [id])
 }
 
 model PostPermission {
