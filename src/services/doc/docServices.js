@@ -42,6 +42,7 @@ export const updateDocumentService = async(req,res) => {
                 title: !title ? documentData.title : title
             }
         })
+        return {success: "Se guardaron los cambios"}
     } catch (error) {
         console.log(error)
     }
