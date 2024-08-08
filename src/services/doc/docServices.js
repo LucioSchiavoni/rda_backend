@@ -22,7 +22,7 @@ export const createDocService = async(req,res) => {
 //Actualizar documento
 const findDocById = async(id) => {
     try {
-        return await prisma.document.findUnique({where:{id: id}})
+        return await prisma.document.findUnique({where:{id: parseInt(id)}})
     } catch (error) {
         console.log(error)
     }
