@@ -67,12 +67,12 @@ export const getDocumentsByUserId = async(req,res) => {
 
 //entrar al contenido del documento por su id
 export const getDocumentById = async(req,res) => {
-    const { authorId,id} = req.params;
+    const {id, authorId} = req.params;
     try {
-        const result = await prisma.document.findUnique({
+        const result = await prisma.document.findFirst({
             where:{
-                authorId: parseInt(authorId),
-                id: parseInt(id)
+                id: parseInt(authorId),
+                
             }
         })
         return result
