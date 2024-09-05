@@ -80,3 +80,29 @@ export const getDocumentById = async(req,res) => {
         console.log(error)
     }
 }
+
+
+export const deleteDocumentService = async(req,res) => {
+    const {id} = req.params;
+    try {
+        const res = await prisma.document.delete({
+            where:{id: parseInt(id)}
+        })
+        return {success: "Documento eliminado"}
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export const addCollaborators = async(req,res) => {
+    try {
+        const res = await prisma.collaborators.create({
+            data:{
+                userId,
+                id
+            }
+        })
+    } catch (error) {
+        console.log(error)
+    }
+}

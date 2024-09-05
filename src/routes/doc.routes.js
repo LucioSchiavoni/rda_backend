@@ -1,4 +1,4 @@
-import { createDocController, getDocumentByIdController, getDocumentsByUserIdController, updateDocController } from "../controllers/doc.controller.js";
+import { createDocController, deleteDocumentController, getDocumentByIdController, getDocumentsByUserIdController, updateDocController } from "../controllers/doc.controller.js";
 import { Router } from "express";
 import { getDocumentById, getDocumentsByUserId } from "../services/doc/docServices.js";
 
@@ -13,6 +13,7 @@ docRouter.get("/docId/:authorId/:id", getDocumentByIdController);
 
 //Todos mis docs
 docRouter.get("/docs/:authorId", getDocumentsByUserIdController);
+docRouter.delete("/docs/:id", deleteDocumentController);
 
 
 export default docRouter;
