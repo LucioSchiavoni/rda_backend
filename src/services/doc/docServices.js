@@ -50,19 +50,46 @@ export const updateDocumentService = async(req,res) => {
 
 
 //ver todos mis documentos creados
-export const getDocumentsByUserId = async(req,res) => {
-    const {authorId} = req.params;
+export const getDocumentsByUserId = async (req, res) => {
+    const { authorId } = req.params;
     try {
-        const result = await prisma.document.findMany({
-            where:{
+        // Encuentra documentos creados por el usuario
+        const documentsByAuthor = await prisma.document.findMany({
+            where: {
                 authorId: parseInt(authorId)
             }
-        })
-        return result
+        });
+
+        // Encuentra documentos donde el usuario es colaborador
+        const documentsByCollaborator = await prisma.document.findMany({
+            where: {
+                collaborators: {
+                    some: {
+                        userId: parseInt(authorId)
+                    }
+                }
+            }
+        });
+
+        // Combina los dos resultados y elimina duplicados si es necesario
+        const allDocuments = [
+            ...documentsByAuthor,
+            ...documentsByCollaborator
+        ];
+
+        // Usar un Set para eliminar duplicados
+        const uniqueDocuments = Array.from(new Set(allDocuments.map(doc => doc.id)))
+            .map(id => {
+                return allDocuments.find(doc => doc.id === id);
+            });
+
+        return res.json(uniqueDocuments);
     } catch (error) {
-        console.log(error)
+        console.log(error);
+        return res.status(500).json({ error: 'Error al obtener documentos' });
     }
-}
+};
+
 
 
 //entrar al contenido del documento por su id
@@ -95,13 +122,29 @@ export const deleteDocumentService = async(req,res) => {
 }
 
 export const addCollaborators = async(req,res) => {
+    const {userId, documentId} = req.body;
     try {
+        const findName = await prisma.user.findUnique({where:{id:userId}})
+        const findCollab = await prisma.collaborators.findFirst(
+            {
+
+                where:{
+                    userId: userId,
+                    documentId: documentId
+                }
+            }
+        )
+        if(findCollab){
+            return {info: "El usuario ya es colaborador de este documento"}
+        }
         const res = await prisma.collaborators.create({
             data:{
-                userId,
-                id
+                userId: userId,
+                documentId: documentId,
+                name: findName.name
             }
         })
+        return {info: "Se agrego un nuevo colaborador"}
     } catch (error) {
         console.log(error)
     }

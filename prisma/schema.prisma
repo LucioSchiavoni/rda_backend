@@ -72,7 +72,7 @@ model Collaborators {
   id Int @id @default(autoincrement())
   documentId Int
   userId Int
-  name String
+  name String?
   document Document @relation(fields: [documentId], references: [id])
 }
 
