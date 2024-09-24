@@ -1,4 +1,4 @@
-import { createNotasService, getNotasService, createFileService, getNotasByIdService, getSeguimientoByIdService, deleteNotaService, updateNotasService, downloadFileService, getNotasByEstadoService, createCarpetaService, createFileByCarpetaService, getArchivosByIdCarpetaService, deleteCarpetaService, deleteFileService, deletePostService } from "../services/prisma.js";
+import { createNotasService, getNotasService, createFileService, getNotasByIdService, getSeguimientoByIdService, deleteNotaService, updateNotasService, downloadFileService, getNotasByEstadoService, createCarpetaService, createFileByCarpetaService, getArchivosByIdCarpetaService, deleteCarpetaService, deleteFileService, deletePostService, addCollaboratorsNotas, getNotasByPermission } from "../services/prisma.js";
 
 
 
@@ -158,6 +158,24 @@ export const deletePost = async(req,res) => {
     try {
         const data = await deletePostService(postId)
         res.json({success: "Repositorio eliminado"})
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export const addCollaboratorsNotasController = async(req,res) => {
+    try {
+        const data = await addCollaboratorsNotas(req,res)
+        res.json({success: "Se agregaron persmisos a este post"})
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export const getNotasByPermissionController = async(req,res) => {
+    try {
+        const data = await getNotasByPermission(req,res)
+         res.json(data)
     } catch (error) {
         console.log(error)
     }

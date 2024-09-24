@@ -53,14 +53,12 @@ export const updateDocumentService = async(req,res) => {
 export const getDocumentsByUserId = async (req, res) => {
     const { authorId } = req.params;
     try {
-        // Encuentra documentos creados por el usuario
         const documentsByAuthor = await prisma.document.findMany({
             where: {
                 authorId: parseInt(authorId)
             }
         });
 
-        // Encuentra documentos donde el usuario es colaborador
         const documentsByCollaborator = await prisma.document.findMany({
             where: {
                 collaborators: {
@@ -71,13 +69,11 @@ export const getDocumentsByUserId = async (req, res) => {
             }
         });
 
-        // Combina los dos resultados y elimina duplicados si es necesario
         const allDocuments = [
             ...documentsByAuthor,
             ...documentsByCollaborator
         ];
-
-        // Usar un Set para eliminar duplicados
+          
         const uniqueDocuments = Array.from(new Set(allDocuments.map(doc => doc.id)))
             .map(id => {
                 return allDocuments.find(doc => doc.id === id);

@@ -130,6 +130,55 @@ export const getNotasByEstadoService = async (estado) =>  {
     }
 }
 
+
+export const addCollaboratorsNotas = async(req,res) => {
+
+    const { userId, postId, permission} = req.body;
+    try {
+        const permissionData = await prisma.postPermission.create({
+            data:{
+                userId: parseInt(userId),
+                postId: parseInt(postId),
+                permission: permission
+            }
+        })
+        return permissionData
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export const getNotasByPermission = async(req,res)=> {
+    const {userId} = req.params;
+    try {
+        const dataPermissions = await prisma.post.findMany({
+            where: {
+                OR: [
+                    { state: "PUBLIC" }, 
+                    {authorId: userId},
+                    {
+                        permissions: {
+                            some: { 
+                                userId: userId 
+                            } 
+                        }
+                    }
+                ]
+            },
+            include: {
+                permissions: true,
+                folder: true,
+                file: true,
+                author: true
+            }
+        
+        })
+        return dataPermissions
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 export const downloadFileService = async (req, res) => {
 
     try {
