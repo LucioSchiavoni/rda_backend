@@ -15,7 +15,14 @@ export const createNotasService = async (data) => {
             title: title,
             content: content,
             authorId: parseInt(authorId),
-            state: state
+            state: state,
+            permissions:{
+                create:{
+                    userId: authorId,
+                    permission: "WRITE"
+                }
+            },
+            
         }
 
     });
@@ -135,6 +142,15 @@ export const addCollaboratorsNotas = async(req,res) => {
 
     const { userId, postId, permission} = req.body;
     try {
+        const existPermission  = await prisma.postPermission.findFirst({
+            where:{
+                postId: parseInt(postId),
+                userId: parseInt(userId)
+            }
+        })
+        if(existPermission){
+            return {info: "Este usuario ya tiene permisos"}
+        }
         const permissionData = await prisma.postPermission.create({
             data:{
                 userId: parseInt(userId),
@@ -142,42 +158,74 @@ export const addCollaboratorsNotas = async(req,res) => {
                 permission: permission
             }
         })
-        return permissionData
+        return {info: "Se agrego un colaborador a este post"}
     } catch (error) {
         console.log(error)
     }
 }
 
-export const getNotasByPermission = async(req,res)=> {
-    const {userId} = req.params;
+export const getNotasByPermission = async (req, res) => {
+    const { authorId } = req.params;
     try {
-        const dataPermissions = await prisma.post.findMany({
+        const postByAuthor = await prisma.post.findMany({
             where: {
-                OR: [
-                    { state: "PUBLIC" }, 
-                    {authorId: userId},
-                    {
-                        permissions: {
-                            some: { 
-                                userId: userId 
-                            } 
-                        }
-                    }
-                ]
+                authorId: parseInt(authorId)
             },
-            include: {
-                permissions: true,
-                folder: true,
-                file: true,
-                author: true
+            include:{
+                author:true,
+                folder:true,
+                file:true,
+                permissions:true
             }
-        
+        });
+
+        const postByCollaborator = await prisma.post.findMany({
+            where: {
+                permissions: {
+                    some: {
+                        userId: parseInt(authorId)
+                    }
+                }
+            },
+            include:{
+                author:true,
+                file:true,
+                folder:true,
+                permissions:true
+            }
+        });
+
+        const postPublic = await prisma.post.findMany({
+            where:{
+                state:"PUBLIC"
+            },
+            include:{
+                author:true,
+                file:true,
+                folder:true,
+                permissions:true
+            }
         })
-        return dataPermissions
+
+        const allPost = [
+            ...postByAuthor,
+            ...postByCollaborator,
+            ...postPublic
+        ];
+          
+        const uniquePost = Array.from(new Set(allPost.map(post => post.id)))
+            .map(id => {
+                return allPost.find(post => post.id === id);
+            });
+
+        return res.json(uniquePost);
     } catch (error) {
-        console.log(error)
+        console.log(error);
+        return res.status(500).json({ error: 'Error al obtener documentos' });
     }
-}
+};
+
+
 
 export const downloadFileService = async (req, res) => {
 

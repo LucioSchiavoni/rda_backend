@@ -141,7 +141,7 @@ export const getAllUserService = async() => {
 export const deleteUserService = async(req,res) => {
 
     const {id} = req.params;
-    
+   
     try {
         const res = await prisma.user.delete({
             where:{
