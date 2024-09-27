@@ -166,7 +166,7 @@ export const deletePost = async(req,res) => {
 export const addCollaboratorsNotasController = async(req,res) => {
     try {
         const data = await addCollaboratorsNotas(req,res)
-        res.json({success: "Se agregaron persmisos a este post"})
+        return res.json(data);
     } catch (error) {
         console.log(error)
     }
